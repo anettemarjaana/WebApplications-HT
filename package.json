@@ -1,0 +1,17 @@
+{
+  "name": "wa-course-assignment",
+  "version": "1.0.0",
+  "main": "src/js/index.js",
+  "scripts": {
+    "start": "node src/js/index.js localhost 8080"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongoose": "^5.10.17"
+  },
+  "keywords": [],
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
