@@ -6,12 +6,18 @@
     "start": "node src/js/index.js localhost 8080"
   },
   "dependencies": {
+    "ejs": "3.1.5",
     "express": "^4.16.4",
-    "mongoose": "^5.10.17"
+    "mongoose": "^5.10.17",
+    "path": "0.12.7"
   },
   "keywords": [],
   "devDependencies": {},
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "Web Applications Course Assignment",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/anettemarjaana/WebApplications-HT.git"
+  }
 }
