@@ -80,5 +80,6 @@ exports.urlbuilder = function () {
     }
   }
 
+  console.log("mongourl: " + mongoURL);
   return mongoURL;
 };

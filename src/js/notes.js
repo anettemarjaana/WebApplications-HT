@@ -33,4 +33,8 @@ npm run devStart}
 npm install --save express-validator
 Used for checking if the inputs are correct before adding in the database
 
+7. REMOVED:
+,
+    "devstart": "nodemon src/js/index.js"
+
 */
