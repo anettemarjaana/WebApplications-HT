@@ -29,4 +29,8 @@ npm run devStart}
 5. Connect posts to mongodb:
 - not working yet -> see WA demo videos
 
+6. Express validator: https://express-validator.github.io/docs/
+npm install --save express-validator
+Used for checking if the inputs are correct before adding in the database
+
 */
