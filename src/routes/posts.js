@@ -13,7 +13,7 @@ router.get("/:id", async (req, res) => {
   if (post == null) {
     res.redirect("/");
   }
-  res.render("posts/feed", {
+  res.render("./../views/posts/feed.html", {
     post: post
   });
 });

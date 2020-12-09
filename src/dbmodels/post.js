@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
+  _id: String,
   title: {
     type: String,
     required: true
@@ -10,7 +11,7 @@ const postSchema = new mongoose.Schema({
   },
   timeStamp: {
     type: Date,
-    default: Date.now.toLocaleDateString()
+    default: Date.now
   }
 });
 

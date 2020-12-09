@@ -3,16 +3,20 @@
   "version": "1.0.0",
   "main": "src/js/index.js",
   "scripts": {
-    "start": "node src/js/index.js localhost 8080"
+    "start": "node src/js/index.js localhost 8080",
+    "devstart": "nodemon src/js/index.js"
   },
   "dependencies": {
     "ejs": "3.1.5",
     "express": "^4.16.4",
+    "mongodb": "^3.6.3",
     "mongoose": "^5.10.17",
     "path": "0.12.7"
   },
   "keywords": [],
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
   "author": "",
   "license": "ISC",
   "description": "Web Applications Course Assignment",

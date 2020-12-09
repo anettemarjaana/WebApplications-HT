@@ -1,11 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
-
-mongoose.connect("mongodb://localhost/rapper", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
 
 const postRouter = require("../routes/posts");
 
@@ -15,6 +9,15 @@ app.set("views", path.join(__dirname, "../views"));
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 /* Now we can save views as .html instead of .ejs */
+
+/* Connect to database */
+var db = require("./db");
+db.connect(db.urlbuilder(), function (err) {
+  if (err) {
+    console.log("Unable to connect to Mongo.");
+    process.exit(1);
+  }
+});
 
 /* Grant an access to the information in the _formfields */
 app.use(express.urlencoded({ extended: false }));

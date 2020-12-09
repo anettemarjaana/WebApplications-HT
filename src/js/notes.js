@@ -26,4 +26,7 @@ npm run devStart}
 
 4. Responsive design with Bootstrap: https://getbootstrap.com/
 
+5. Connect posts to mongodb:
+- not working yet -> see WA demo videos
+
 */
