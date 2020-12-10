@@ -37,4 +37,8 @@ Used for checking if the inputs are correct before adding in the database
 ,
     "devstart": "nodemon src/js/index.js"
 
+
+8. New database connection like in demo
+* Promise: npm install bluebird
+
 */
