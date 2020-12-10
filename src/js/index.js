@@ -1,7 +1,10 @@
+require("dotenv").config();
 const express = require("express");
-const app = express();
+var path = require("path");
 var mongoose = require("mongoose");
 var Promise = require("bluebird");
+
+const app = express();
 
 const postRouter = require("../routes/posts");
 
@@ -15,7 +18,7 @@ app.set("view engine", "html");
 /* Grant an access to the information in the _formfields */
 app.use(express.urlencoded({ extended: false }));
 
-/* Building the database connection like in express-mongo demo:
+/* BUILD THE DATABASE CONNECTION like in express-mongo demo:
 https://bitbucket.org/aknutas/www-express-mongo-demo/src/master/app.js */
 
 // Reading env variables (config example from https://github.com/sclorg/nodejs-ex/blob/master/server.js)
@@ -58,8 +61,11 @@ if (mongoURL == null) {
     mongoURL += mongoHost + ":" + mongoPort + "/" + mongoDatabase;
   }
 }
+
 console.log("Mongo URL: " + mongoURL);
-// Connecting to DB
+
+/* CONNECTING TO DATABASE
+ Gives an error: undefined mongoURL */
 mongoose.connect(mongoURL);
 mongoose.Promise = Promise;
 var db = mongoose.connection;

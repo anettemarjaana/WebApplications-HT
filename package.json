@@ -7,11 +7,12 @@
     "devstart": "nodemon src/js/index.js"
   },
   "dependencies": {
-    "bluebird": "^3.7.2",
+    "bluebird": "3.7.2",
+    "dotenv": "^8.2.0",
     "ejs": "3.1.5",
-    "express": "^4.16.4",
-    "mongodb": "^3.6.3",
-    "mongoose": "^5.10.17",
+    "express": "4.17.1",
+    "mongodb": "3.6.3",
+    "mongoose": "5.11.6",
     "path": "0.12.7"
   },
   "keywords": [],

@@ -41,4 +41,7 @@ Used for checking if the inputs are correct before adding in the database
 8. New database connection like in demo
 * Promise: npm install bluebird
 
+9. reading env not woking
+---> npm i dotenv --save
+
 */
