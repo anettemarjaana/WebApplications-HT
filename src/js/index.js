@@ -4,6 +4,7 @@ var path = require("path");
 var mongoose = require("mongoose");
 var Promise = require("bluebird");
 const Post = require("./../dbmodels/post");
+const methodOverride = require("method-override");
 
 const app = express();
 
@@ -71,6 +72,8 @@ app.set("view engine", "html");
 /* Now we can save views as .html instead of .ejs */
 /* Grant an access to the information in the _formfields */
 app.use(express.urlencoded({ extended: false }));
+/* Override form methods to make deleting posts possible: */
+app.use(methodOverride("_method"));
 
 /* Render the blog posts from the data base on the index page: */
 app.get("/", async (req, res) => {

@@ -44,6 +44,13 @@
             <%= post.content %>
           </div>
           <a href="posts/<%= post.urlSlug %>" class="btn btn-primary">Show</a>
+          <form
+            action="posts/<%= post.id %>?_method=DELETE"
+            method="POST"
+            class="d-inline"
+          >
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
         </div>
       </div>
       <% }) %>
