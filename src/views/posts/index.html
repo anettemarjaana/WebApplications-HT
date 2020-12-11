@@ -38,11 +38,12 @@
         <div class="card-body">
           <h4 class="card-title"><%= post.title %></h4>
           <div class="card-subtitle text-muted mb-2">
-            <%= post.timeStamp %>
+            <%= post.timeStamp.toLocaleDateString() %>
           </div>
           <div class="card-text mb-2">
             <%= post.content %>
           </div>
+          <a href="posts/<%= post.urlSlug %>" class="btn btn-primary">Show</a>
         </div>
       </div>
       <% }) %>

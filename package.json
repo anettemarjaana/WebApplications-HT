@@ -13,7 +13,8 @@
     "express": "4.17.1",
     "mongodb": "3.6.3",
     "mongoose": "5.11.6",
-    "path": "0.12.7"
+    "path": "0.12.7",
+    "slugify": "^1.4.6"
   },
   "keywords": [],
   "devDependencies": {

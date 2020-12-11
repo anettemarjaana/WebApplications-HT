@@ -21,8 +21,8 @@ a change made:
 npm i --save-dev nodemon
 
 package.json:
-scripts: devStart
-npm run devStart}
+scripts: devstart
+npm run devstart}
 
 4. Responsive design with Bootstrap: https://getbootstrap.com/
 
@@ -41,7 +41,11 @@ Used for checking if the inputs are correct before adding in the database
 8. New database connection like in demo
 * Promise: npm install bluebird
 
-9. reading env not woking
----> npm i dotenv --save
+9. mongodb with Atlas
+
+10. npm i slugify --save
+for posts named by their content not their id
+
+11. npm i method-override --save
 
 */

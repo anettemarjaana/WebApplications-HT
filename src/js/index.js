@@ -3,20 +3,11 @@ const express = require("express");
 var path = require("path");
 var mongoose = require("mongoose");
 var Promise = require("bluebird");
+const Post = require("./../dbmodels/post");
 
 const app = express();
 
 const postRouter = require("../routes/posts");
-
-/* GET THE VIEW FROM views/index.html */
-var path = require("path");
-app.set("views", path.join(__dirname, "../views"));
-app.engine("html", require("ejs").renderFile);
-app.set("view engine", "html");
-/* Now we can save views as .html instead of .ejs */
-
-/* Grant an access to the information in the _formfields */
-app.use(express.urlencoded({ extended: false }));
 
 /* BUILD THE DATABASE CONNECTION like in express-mongo demo:
 https://bitbucket.org/aknutas/www-express-mongo-demo/src/master/app.js */
@@ -62,29 +53,28 @@ if (mongoURL == null) {
   }
 }
 
-console.log("Mongo URL: " + mongoURL);
-
 /* CONNECTING TO DATABASE
  Gives an error: undefined mongoURL */
-mongoose.connect(mongoURL);
+mongoose.connect(mongoURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+});
 mongoose.Promise = Promise;
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// Create route
-app.get("/", (req, res) => {
-  const blogPosts = [
-    {
-      title: "Test Post",
-      timeStamp: new Date().toLocaleDateString(),
-      content: "This is my first blog post!"
-    },
-    {
-      title: "Test Post 2",
-      timeStamp: new Date().toLocaleDateString(),
-      content: "This is my very second blog post!"
-    }
-  ];
+/* GET THE VIEW FROM views/index.html */
+app.set("views", path.join(__dirname, "../views"));
+app.engine("html", require("ejs").renderFile);
+app.set("view engine", "html");
+/* Now we can save views as .html instead of .ejs */
+/* Grant an access to the information in the _formfields */
+app.use(express.urlencoded({ extended: false }));
+
+/* Render the blog posts from the data base on the index page: */
+app.get("/", async (req, res) => {
+  const blogPosts = await Post.find().sort({ timeStamp: "desc" });
   res.render("posts/index", { blogPosts: blogPosts });
 });
 
@@ -94,8 +84,9 @@ app.use("/posts", postRouter);
 
 /* Setting the port by reading the environment variables: 
 https://github.com/sclorg/nodejs-ex/blob/master/server.js */
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
+  ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0";
 
 app.set("port", port);
 
-app.listen(8080);
+app.listen(port);

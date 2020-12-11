@@ -29,10 +29,19 @@
 
   <body>
     <div class="container">
-      <h1 class="mb-4"><%= post.title %></h1>
-      <div class="text-muted mb-2"><%= post.timeStamp %></div>
-      <a href="/" class="btn btn-secondary">All Posts</a>
-      <a href="/posts/edit/<%= post.id %>" class="btn btn-info">Edit</a>
+      <div class="card mt-4">
+        <div class="card-body">
+          <h4 class="card-title"><%= post.title %></h4>
+          <div class="card-subtitle text-muted mb-2">
+            <%= post.timeStamp.toLocaleDateString() %>
+          </div>
+          <div class="card-text mb-2">
+            <%= post.content %>
+          </div>
+        </div>
+      </div>
+      <a href="/" class="btn btn-secondary mt-4">All Posts</a>
+      <a href="/posts/edit/<%= post.id %>" class="btn btn-info mt-4">Edit</a>
     </div>
 
     <script

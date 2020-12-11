@@ -13,8 +13,8 @@ router.get("/new", (req, res) => {
 
 /* Once the post is ready, the app will redirect the user to see the new post.
 That view model is feed: */
-router.get("/:id", async (req, res) => {
-  const post = await Post.findById(req.params.id);
+router.get("/:urlSlug", async (req, res) => {
+  const post = await Post.findOne({ urlSlug: req.params.urlSlug });
   if (post == null) {
     /* if the id in the address is incorrect*/
     res.redirect("/"); /* redirect to home page */
@@ -27,6 +27,7 @@ router.get("/:id", async (req, res) => {
 
 /* Hitting the save button on posts/new will call this function.
 The function should save the post in the database. */
+
 router.post("/", async (req, res) => {
   let post = new Post({
     /* Fetch the information of the post from the _formfields
@@ -34,14 +35,13 @@ router.post("/", async (req, res) => {
     title: req.body.title,
     content: req.body.content
   });
-  console.log("We got title: " + post.title);
-  console.log("and content: " + post.content);
+
   try {
     /* If there's a success: */
     /* Wait till the post is saved in database and then redirect to page /posts/id */
     post = await post.save();
     console.log("Inserted 1 post");
-    res.redirect(`/posts/${post.id}`);
+    res.redirect(`/posts/${post.urlSlug}`);
     console.log("Redirection done");
   } catch (e) {
     /* If a required information is missing */
@@ -51,6 +51,13 @@ router.post("/", async (req, res) => {
       post: post /* The fields will be prepopulated with the failed post. */
     });
   }
+});
+
+/* A function for deleting posts:
+Because forms can only either GET or POST, we need to require method-override */
+router.delete("/:id", async (req, res) => {
+  await Post.findByIdAndDelete(req.params.id);
+  res.redirect("/");
 });
 
 module.exports = router;
