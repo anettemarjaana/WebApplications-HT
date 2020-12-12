@@ -44,6 +44,7 @@
             <%= post.content %>
           </div>
           <a href="posts/<%= post.urlSlug %>" class="btn btn-primary">Show</a>
+          <a href="/posts/edit/<%= post.id %>" class="btn btn-info">Edit</a>
           <form
             action="posts/<%= post.id %>?_method=DELETE"
             method="POST"
