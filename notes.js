@@ -1,6 +1,8 @@
 // HOW I SET THIS WHOLE THING UP:
 
-/* 1. Template engine for Express.js:
+/* FUNCTIONALITIES FOR POSTS FIRST:
+
+1. Template engine for Express.js:
 
 npm install ejs --save 
 npm install path --save
@@ -49,6 +51,11 @@ for posts named by their content not their id
 11. npm i method-override --save
 
 NOW POST FUNCTIONS ARE READY.
+
+
+
+
+
 NEXT UP: USER REGISTRATION AND LOGIN.
 - Add the user schema
 - New buttons and views: sign up, log in and log out
@@ -59,8 +66,24 @@ NEXT UP: USER REGISTRATION AND LOGIN.
 - Create a welcome page for login with an animation: https://mdbootstrap.com/docs/jquery/css/animations/
 - Create a goodbye page for logout with an animation
 
-1. npm i bcrypt --save
+1. Registration:
+ npm i bcrypt --save
 For securing the passwords
+
+2. Log in:
+npm i passport passport-local --save
+
+passport-local is a strategy for authenticating with a username and password:
+http://www.passportjs.org/packages/passport-local/
+
+npm i express-session express-flash --save
+
+express-session uses cookies for managing the log in sessions
+express-flash shows messages to the user (wrong password etc.)
+
+
+
+
 
 EXTRA FUNCTIONS TO CONSIDER AFTER:
 - Add access permissions user by user:

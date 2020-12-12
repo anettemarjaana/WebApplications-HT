@@ -83,7 +83,7 @@ That view model is feed: */
 router.get("/:urlSlug", async (req, res) => {
   const post = await Post.findOne({ urlSlug: req.params.urlSlug });
   if (post == null) {
-    /* if the id in the address is incorrect*/
+    /* if the slug in the address is incorrect*/
     res.redirect("/"); /* redirect to home page */
   } else {
     res.render("posts/feed", {

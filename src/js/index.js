@@ -5,6 +5,9 @@ var mongoose = require("mongoose");
 var Promise = require("bluebird");
 const Post = require("./../dbmodels/post");
 const methodOverride = require("method-override");
+const passport = require("passport");
+const flash = require("express-flash");
+const session = require("express-session");
 
 const app = express();
 
@@ -75,6 +78,19 @@ app.set("view engine", "html");
 app.use(express.urlencoded({ extended: false }));
 /* Override form methods to make deleting posts possible: */
 app.use(methodOverride("_method"));
+/* Allow showing flash messages to the user: */
+app.use(flash());
+/* Allow user login sessions: */
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+  })
+);
+/* Set up passport libraries for the user authentication and user sessions: */
+app.use(passport.initialize());
+app.use(passport.session());
 
 /* GET THE VIEW FROM views/index.html
 Later: index.html should be welcome page unless logged in.
