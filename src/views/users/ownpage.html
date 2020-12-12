@@ -36,7 +36,13 @@
       </div>
       <a href="/" class="btn btn-secondary mt-4">All Posts</a>
       <a href="/users/settings" class="btn btn-info mt-4">Settings</a>
-      <a href="/users/logout" class="btn btn-info mt-4">Log out</a>
+      <form
+        action="/users/logout?_method=DELETE"
+        method="POST"
+        class="d-inline"
+      >
+        <button type="submit" class="btn btn-danger mt-4">Log out</button>
+      </form>
     </div>
 
     <script

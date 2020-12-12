@@ -31,7 +31,13 @@
     <div class="container">
       <h1 class="mb-4">Recent posts</h1>
       <div class="float-sm-right">
-        <a href="users/logout.html" class="btn btn-primary">Log out</a>
+        <form
+          action="users/logout?_method=DELETE"
+          method="POST"
+          class="d-inline"
+        >
+          <button type="submit" class="btn btn-danger mt-4">Log out</button>
+        </form>
       </div>
       <br />
       <a href="posts/new" class="btn btn-success">Let it out!</a>

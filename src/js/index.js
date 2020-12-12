@@ -101,36 +101,10 @@ app.use(methodOverride("_method"));
 /* SET THE FIRST PAGE THE USER LANDS ON
 Later: index.html should be welcome page unless logged in.
 
-
-function checkAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { // If the user is logged in
-    return next()
-  }
-
-  res.redirect('/login') // Redirect to log in if not logged in
-}
-
-^ SEE IN THAT FUNCTION:
-Login page should have an option to view public posts without logging in.
-* log out page and button should be only visible to logged in users
-
-
-SEE IF USER HAS ALREADY LOGGED IN BUT STILL TRIES TO LOG IN
--> Prevent the user from doing authentication on top of authentication
-* sign up and log in pages should be hidden
-
-function checkNotAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { // if logged in
-    return res.redirect('/') // redirect to home page
-  }
-  next()
-}
-
 Render the blog posts from the database on the index page in an order
 "from new to old (desc)": */
-app.get("/", async (req, res) => {
-  const blogPosts = await Post.find().sort({ timeStamp: "desc" });
-  res.render("posts/index", { blogPosts: blogPosts });
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
 /* USE THE POSTROUTER:

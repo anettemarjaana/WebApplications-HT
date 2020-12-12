@@ -2,6 +2,13 @@ const express = require("express");
 const Post = require("./../dbmodels/post"); // schema for creating new posts
 const router = express.Router();
 
+/* Render the blog posts from the database on the index page in an order
+"from new to old (desc)": */
+router.get("/index", async (req, res) => {
+  const blogPosts = await Post.find().sort({ timeStamp: "desc" });
+  res.render("posts/index", { blogPosts: blogPosts });
+});
+
 /* The New Post -page will be in an address ".../posts/new".
 This function renders the fields and prepares a new database object. */
 router.get("/new", (req, res) => {
@@ -22,7 +29,6 @@ router.get("/edit/:id", async (req, res) => {
 
 /* Hitting the save button on posts/new will call this function.
 It creates a new post and redirects to savePost function. */
-
 router.post(
   "/",
   async (req, res, next) => {

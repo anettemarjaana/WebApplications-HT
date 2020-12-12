@@ -31,7 +31,7 @@
     <div class="container">
       <h1 class="mb-4">Log in</h1>
       <% if (messages.error) { %> <%= messages.error %> <% } %>
-      <form action="/login" method="POST">
+      <form action="/users/login" method="POST">
         <%- include("_formfields.html") %>
       </form>
     </div>
