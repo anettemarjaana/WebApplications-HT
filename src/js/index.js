@@ -9,6 +9,7 @@ const methodOverride = require("method-override");
 const app = express();
 
 const postRouter = require("../routes/posts");
+const userRouter = require("../routes/users");
 
 /* BUILD THE DATABASE CONNECTION like in express-mongo demo:
 https://bitbucket.org/aknutas/www-express-mongo-demo/src/master/app.js */
@@ -65,7 +66,7 @@ mongoose.Promise = Promise;
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-/* GET THE VIEW FROM views/index.html */
+/* SET THE VIEWS ENGINE. Using ejs but naming files with .html */
 app.set("views", path.join(__dirname, "../views"));
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
@@ -75,7 +76,11 @@ app.use(express.urlencoded({ extended: false }));
 /* Override form methods to make deleting posts possible: */
 app.use(methodOverride("_method"));
 
-/* Render the blog posts from the data base on the index page: */
+/* GET THE VIEW FROM views/index.html
+Later: index.html should be welcome page unless logged in.
+
+Render the blog posts from the data base on the index page in an order
+"from new to old (desc)": */
 app.get("/", async (req, res) => {
   const blogPosts = await Post.find().sort({ timeStamp: "desc" });
   res.render("posts/index", { blogPosts: blogPosts });
@@ -84,6 +89,10 @@ app.get("/", async (req, res) => {
 /* USE THE POSTROUTER:
 Now every blog post will use a URL with a /posts/ */
 app.use("/posts", postRouter);
+
+/* USE THE USERROUTER:
+Now every user account will use a URL with a /users/ */
+app.use("/users", userRouter);
 
 /* Setting the port by reading the environment variables: 
 https://github.com/sclorg/nodejs-ex/blob/master/server.js */

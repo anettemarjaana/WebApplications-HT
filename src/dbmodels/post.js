@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+/*schema for users:
+const User = require("./user"); 
+add a field for author in the postSchema */
 
 const postSchema = new mongoose.Schema({
   title: {

@@ -48,4 +48,37 @@ for posts named by their content not their id
 
 11. npm i method-override --save
 
+NOW POST FUNCTIONS ARE READY.
+NEXT UP: USER REGISTRATION AND LOGIN.
+- Add the user schema
+- New buttons and views: sign up, log in and log out
+- Support viewing ALL posts in the system
+- Support viewing a certain user's posts
+- Have delete function only appear on the user's own feed!
+
+- Create a welcome page for login with an animation: https://mdbootstrap.com/docs/jquery/css/animations/
+- Create a goodbye page for logout with an animation
+
+1. npm i bcrypt --save
+For securing the passwords
+
+EXTRA FUNCTIONS TO CONSIDER AFTER:
+- Add access permissions user by user:
+    - blog is open to...
+        - everyone
+        - registered users only
+        - to specific users only
+        - to myself only
+    - Access: "all", "registered", "specified", "me"
+    - if "specified", ....
+- Support pictures storage and display
+- Search function by hashtags? sphinx or elasticsearch?
+- Provide data from the application through an API
+    * document it through API Blueprint
+
+See after:
+- Returning to Rahti
+- how to have the environmental variables there?
+    * dotenv library + .env file
+
 */

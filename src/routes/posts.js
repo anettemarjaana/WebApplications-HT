@@ -2,35 +2,22 @@ const express = require("express");
 const Post = require("./../dbmodels/post"); // schema for creating new posts
 const router = express.Router();
 
-//const { sanitizeBody } = require("express-validator"); // validator for checking the objects
-
-/* The New Post -page will be in an address ".../posts/new". */
+/* The New Post -page will be in an address ".../posts/new".
+This function renders the fields and prepares a new database object. */
 router.get("/new", (req, res) => {
   res.render("posts/new", {
     post: new Post()
   });
 });
 
-/* The Edit Post -page will be in an address ".../posts/edit". */
+/* The Edit Post -page will be in an address ".../posts/edit". 
+This function renders the edit view and prefills the form fields with
+the selected post. */
 router.get("/edit/:id", async (req, res) => {
   const post = await Post.findById(req.params.id);
   res.render("posts/edit", {
     post: post
   });
-});
-
-/* Once the post is ready, the app will redirect the user to see the new post.
-That view model is feed: */
-router.get("/:urlSlug", async (req, res) => {
-  const post = await Post.findOne({ urlSlug: req.params.urlSlug });
-  if (post == null) {
-    /* if the id in the address is incorrect*/
-    res.redirect("/"); /* redirect to home page */
-  } else {
-    res.render("posts/feed", {
-      post: post
-    });
-  }
 });
 
 /* Hitting the save button on posts/new will call this function.
@@ -90,5 +77,19 @@ function savePost(path) {
     }
   };
 }
+
+/* Once the post is ready, the app will redirect the user to see the new post.
+That view model is feed: */
+router.get("/:urlSlug", async (req, res) => {
+  const post = await Post.findOne({ urlSlug: req.params.urlSlug });
+  if (post == null) {
+    /* if the id in the address is incorrect*/
+    res.redirect("/"); /* redirect to home page */
+  } else {
+    res.render("posts/feed", {
+      post: post
+    });
+  }
+});
 
 module.exports = router;
