@@ -21,7 +21,7 @@ router.get("/login", (req, res) => {
 
 /* Once the Register-button is hit, this function gets ran: */
 router.post(
-  "/signup",
+  "/",
   async (req, res, next) => {
     console.log("Register button was hit");
     req.user = new User();
@@ -42,6 +42,19 @@ router.post(
   })
 );
 
+/* User's own page: */
+router.get("/:urlSlug", async (req, res) => {
+  const user = await User.findOne({ urlSlug: req.params.urlSlug });
+  if (user == null) {
+    /* if the slug in the address is incorrect*/
+    res.redirect("/"); /* redirect to home page */
+  } else {
+    res.render("users/ownpage", {
+      user: user
+    });
+  }
+});
+
 function saveUser(path) {
   return async (req, res) => {
     /* Fetch the information of the user from the _formfields
@@ -52,7 +65,7 @@ function saveUser(path) {
     const securePassword = await bcrypt.hash(req.body.password, 10);
     user.password = securePassword;
 
-    console.log("Got username and password");
+    console.log("Got password and the username " + user.username);
     try {
       /* If there's a success: */
       /* Wait till the user is saved in database and then redirect to page /users/id 
@@ -65,25 +78,10 @@ function saveUser(path) {
       /* If a required informatinon is missing */
       /* Stay on the same page*/
       console.log(e);
-      res.render("users/${path}", {
-        user: user /* The fields will be prepopulated with the failed user. */
-      });
+      res.render(`users/${path}`);
     }
   };
 }
-
-/* User's own page: */
-router.get("/:urlSlug", async (req, res) => {
-  const user = await User.findOne({ urlSlug: req.params.urlSlug });
-  if (user == null) {
-    /* if the id in the address is incorrect*/
-    res.redirect("/"); /* redirect to home page */
-  } else {
-    res.render("users/ownpage", {
-      user: user
-    });
-  }
-});
 
 async function initializePassport(passport) {
   let message = "";

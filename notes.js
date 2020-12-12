@@ -81,7 +81,15 @@ npm i express-session express-flash --save
 express-session uses cookies for managing the log in sessions
 express-flash shows messages to the user (wrong password etc.)
 
+3. For checking if a user is logged in...
+30:00
 
+4. Log out method
+
+5. Connect postSchema to userSchema by adding a variable "author"
+---> Own page becomes own feed
+---> Public feed separately
+---> Viewing other user's pages
 
 
 

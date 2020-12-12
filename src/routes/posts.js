@@ -71,7 +71,7 @@ function savePost(path) {
       /* If a required information is missing */
       /* Stay on the same page*/
       console.log(e);
-      res.render("posts/${path}", {
+      res.render(`posts/${path}`, {
         post: post /* The fields will be prepopulated with the failed post. */
       });
     }

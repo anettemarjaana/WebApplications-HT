@@ -11,6 +11,7 @@ const session = require("express-session");
 
 const app = express();
 
+/* Routers for handling users and their blog posts */
 const postRouter = require("../routes/posts");
 const userRouter = require("../routes/users");
 
@@ -69,18 +70,21 @@ mongoose.Promise = Promise;
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-/* SET THE VIEWS ENGINE. Using ejs but naming files with .html */
+/* SET THE VIEWS ENGINE: Using ejs but naming files with .html */
 app.set("views", path.join(__dirname, "../views"));
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 /* Now we can save views as .html instead of .ejs */
-/* Grant an access to the information in the _formfields */
+
+/* TAKE OTHER LIBRARIES INTO USE: */
+/* For fill-out forms: */
 app.use(express.urlencoded({ extended: false }));
-/* Override form methods to make deleting posts possible: */
-app.use(methodOverride("_method"));
 /* Allow showing flash messages to the user: */
 app.use(flash());
 /* Allow user login sessions: */
+if (process.env.SESSION_SECRET == null) {
+  console.log("Session secret failed");
+}
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -91,11 +95,38 @@ app.use(
 /* Set up passport libraries for the user authentication and user sessions: */
 app.use(passport.initialize());
 app.use(passport.session());
+/* Override form methods to make e.g. deleting posts possible: */
+app.use(methodOverride("_method"));
 
-/* GET THE VIEW FROM views/index.html
+/* SET THE FIRST PAGE THE USER LANDS ON
 Later: index.html should be welcome page unless logged in.
 
-Render the blog posts from the data base on the index page in an order
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { // If the user is logged in
+    return next()
+  }
+
+  res.redirect('/login') // Redirect to log in if not logged in
+}
+
+^ SEE IN THAT FUNCTION:
+Login page should have an option to view public posts without logging in.
+* log out page and button should be only visible to logged in users
+
+
+SEE IF USER HAS ALREADY LOGGED IN BUT STILL TRIES TO LOG IN
+-> Prevent the user from doing authentication on top of authentication
+* sign up and log in pages should be hidden
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { // if logged in
+    return res.redirect('/') // redirect to home page
+  }
+  next()
+}
+
+Render the blog posts from the database on the index page in an order
 "from new to old (desc)": */
 app.get("/", async (req, res) => {
   const blogPosts = await Post.find().sort({ timeStamp: "desc" });

@@ -23,8 +23,9 @@ const userSchema = new mongoose.Schema({
 
 /* The function below is going to be ran within any update of the user */
 userSchema.pre("validate", function (next) {
-  if (this.name) {
-    this.urlSlug = slugify(this.name, { lower: true, strict: true });
+  if (this.username) {
+    this.urlSlug = slugify(this.username, { lower: true, strict: true });
+    console.log("urlSlug formed");
   }
   next();
 });
