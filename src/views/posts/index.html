@@ -30,17 +30,14 @@
   <body>
     <div class="container">
       <h1 class="mb-4">Recent posts</h1>
+      <br />
+      <a href="posts/new" class="btn btn-success">Let it out!</a>
       <div class="float-sm-right">
-        <form
-          action="users/logout?_method=DELETE"
-          method="POST"
-          class="d-inline"
-        >
+        <a href="" class="btn btn-success">My blog</a>
+        <form action="" method="POST" class="d-inline">
           <button type="submit" class="btn btn-danger mt-4">Log out</button>
         </form>
       </div>
-      <br />
-      <a href="posts/new" class="btn btn-success">Let it out!</a>
 
       <!--Iterate through the blog posts sent from index.js:-->
       <% blogPosts.forEach(post => { %>

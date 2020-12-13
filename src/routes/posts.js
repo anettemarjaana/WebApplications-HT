@@ -6,7 +6,10 @@ const router = express.Router();
 "from new to old (desc)": */
 router.get("/index", async (req, res) => {
   const blogPosts = await Post.find().sort({ timeStamp: "desc" });
-  res.render("posts/index", { blogPosts: blogPosts });
+  res.render("posts/index", {
+    blogPosts: blogPosts,
+    userSlug: req.user.urlSlug
+  });
 });
 
 /* The New Post -page will be in an address ".../posts/new".

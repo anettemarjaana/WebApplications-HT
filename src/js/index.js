@@ -1,4 +1,4 @@
-require("dotenv").config();
+// When exporting to Rahti, env variables: require("dotenv").config();
 const express = require("express");
 var path = require("path");
 var mongoose = require("mongoose");
@@ -9,11 +9,11 @@ const passport = require("passport");
 const flash = require("express-flash");
 const session = require("express-session");
 
-const app = express();
-
 /* Routers for handling users and their blog posts */
 const postRouter = require("../routes/posts");
 const userRouter = require("../routes/users");
+
+const app = express();
 
 /* BUILD THE DATABASE CONNECTION like in express-mongo demo:
 https://bitbucket.org/aknutas/www-express-mongo-demo/src/master/app.js */
@@ -98,6 +98,16 @@ app.use(passport.session());
 /* Override form methods to make e.g. deleting posts possible: */
 app.use(methodOverride("_method"));
 
+var sess;
+app.get("/", function (req, res) {
+  sess = req.session;
+  /*
+   * Here we have assigned the 'session' to 'sess'.
+   * Now we can create any number of session variables we want.
+   */
+  sess.username;
+});
+
 /* SET THE FIRST PAGE THE USER LANDS ON
 Later: index.html should be welcome page unless logged in.
 
@@ -110,7 +120,6 @@ app.get("/", (req, res) => {
 /* USE THE POSTROUTER:
 Now every blog post will use a URL with a /posts/ */
 app.use("/posts", postRouter);
-
 /* USE THE USERROUTER:
 Now every user account will use a URL with a /users/ */
 app.use("/users", userRouter);
