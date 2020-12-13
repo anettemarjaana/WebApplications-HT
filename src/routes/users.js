@@ -77,15 +77,17 @@ router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
   }
 });
 
-/* Viewing other user's feeds: */
+/* Viewing other users' feeds: 
+NOW ONLY WORKING IF A USER IS LOGGED IN. */
 router.get("/:authorSlug", async (req, res) => {
+  feedSlug = req.params.authorSlug;
   console.log(
-    "Redirecting the user " + req.user.username + " to someone else's feed"
+    "The user " + req.user.username + " wants to reach feed: " + feedSlug
   );
-  feedSlug = req.params.urlSlug;
   /* If the user clicks their own name, redirect them to their own page */
-  if (feedSlug === req.user.username) {
-    res.redirect("users/profile");
+  if (feedSlug === req.user.urlSlug) {
+    console.log("The user clicked their own name. Redirecting to profile.");
+    res.redirect("/users/profile");
   }
   const user = await User.findOne({ urlSlug: feedSlug });
 

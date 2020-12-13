@@ -57,14 +57,11 @@ NOW POST FUNCTIONS ARE READY.
 
 
 NEXT UP: USER REGISTRATION AND LOGIN.
-- Add the user schema
-- New buttons and views: sign up, log in and log out
-- Support viewing ALL posts in the system
-- Support viewing a certain user's posts
-- Have delete function only appear on the user's own feed!
-
-- Create a welcome page for login with an animation: https://mdbootstrap.com/docs/jquery/css/animations/
-- Create a goodbye page for logout with an animation
+[x] Add the user schema
+[x] New buttons and views: sign up, log in and log out
+[x] Support viewing ALL posts in the system
+[x] Support viewing a certain user's posts
+[x] Have delete function only appear on the user's own feed!
 
 1. Registration:
  npm i bcrypt --save
@@ -94,11 +91,20 @@ express-flash shows messages to the user (wrong password etc.)
     - creating feeds @ /users/authorSlug
         - Rendering certain user's posts at users/profile and users/feed
         * feed is meant for users other than the req.user
+    test users: marja and pekka
 
-
+------ NEXT UP: --------
+[] Create a welcome page (index.html) for login with an animation: https://mdbootstrap.com/docs/jquery/css/animations/
+    * Support picture storage and display?
+[] Limit the length of blog posts to 300 characters
+[] Check the if username-unique works
+[] Switch the timestamps to Finnish form
+[] Make it look nice through CSS
+[] Make viewing user's feeds possible even if not logged in 
 
 EXTRA FUNCTIONS TO CONSIDER AFTER:
-- Add access permissions user by user:
+[] Settings page: change user info later (not username)
+[] Add access permissions user by user:
     - blog is open to...
         - everyone
         - registered users only
@@ -106,9 +112,18 @@ EXTRA FUNCTIONS TO CONSIDER AFTER:
         - to myself only
     - Access: "all", "registered", "specified", "me"
     - if "specified", ....
-- Support pictures storage and display
-- Search function by hashtags? sphinx or elasticsearch?
-- Provide data from the application through an API
+This means that the access permission is requested withing signing up. Add it
+to "Settings" page too. The choice is stored in user-schema. Add a button
+for adding a friend and for adding an enemy (blocking). List these choices
+as a list in the user-schema.
+Then router.get("/:authorSlug"...) function checks if the posts are available to the
+current user (isAuthenticated or not). Also posts/index should be changed too.
+
+[] Support pictures storage and display
+
+[] Search function by hashtags? sphinx or elasticsearch?
+
+[] Provide data from the application through an API
     * document it through API Blueprint
 
 See after:
@@ -116,4 +131,6 @@ See after:
 - how to have the environmental variables there?
     * dotenv library + .env file
 
+
+- Logo from: https://www.freelogodesign.org/
 */

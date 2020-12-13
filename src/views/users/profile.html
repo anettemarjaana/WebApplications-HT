@@ -35,6 +35,7 @@
         </div>
       </div>
       <a href="/posts/index" class="btn btn-secondary mt-4">All Posts</a>
+      <a href="/posts/new" class="btn btn-success d-inline">Let it out!</a>
       <a href="/users/settings" class="btn btn-info mt-4">Settings</a>
       <form
         action="/users/logout?_method=DELETE"
@@ -43,6 +44,32 @@
       >
         <button type="submit" class="btn btn-danger mt-4">Log out</button>
       </form>
+
+      <!--This page will show the user's own posts.
+        Iterate through the blog posts sent from users.js:-->
+      <% blogPosts.forEach(post => { %>
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title"><%= post.author %></h5>
+
+          <div class="card-subtitle text-muted mb-2">
+            <%= post.timeStamp.toLocaleDateString() %>
+          </div>
+          <div class="card-text mb-2">
+            <%= post.content %>
+          </div>
+          <a href="/posts/<%= post.urlSlug %>" class="btn btn-primary">Show</a>
+          <a href="/posts/edit/<%= post.id %>" class="btn btn-info">Edit</a>
+          <form
+            action="/posts/<%= post.id %>?_method=DELETE"
+            method="POST"
+            class="d-inline"
+          >
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+      <% }) %>
     </div>
 
     <script

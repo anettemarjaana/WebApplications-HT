@@ -27,6 +27,8 @@
     <title>Angler</title>
   </head>
 
+      <!--This page should only be visible to the logged in user that is
+      the author of this post, as it contains options to edit and delete.-->
   <body>
     <div class="container">
       <div class="card mt-4">
@@ -42,14 +44,14 @@
           </div>
         </div>
       </div>
-      <a href="/" class="btn btn-secondary mt-4">All Posts</a>
+      <a href="/posts/index" class="btn btn-secondary mt-4">All Posts</a>
       <a href="/posts/edit/<%= post.id %>" class="btn btn-info mt-4">Edit</a>
       <form
-        action="posts/<%= post.id %>?_method=DELETE"
+        action="/posts/<%= post.id %>?_method=DELETE"
         method="POST"
         class="d-inline"
       >
-        <a href="/" class="btn btn-danger mt-4">Delete</a>
+      <button type="submit" class="btn btn-danger mt-4">Delete</a>
       </form>
     </div>
 

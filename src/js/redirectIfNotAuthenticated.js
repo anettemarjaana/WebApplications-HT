@@ -12,7 +12,7 @@ function redirectIfNotAuthenticated(req, res, next) {
     return next(); // Allow whatever action
   }
 
-  res.redirect("/login"); // Redirect to log in if not logged in
+  res.redirect("/users/login"); // Redirect to log in if not logged in
 }
 
 module.exports = redirectIfNotAuthenticated;

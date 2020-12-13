@@ -103,16 +103,20 @@ function savePost(path) {
 }
 
 /* Once the post is ready, the app will redirect the user to see the new post.
-That view model is show: */
-router.get("/:urlSlug", async (req, res) => {
+That view model is show and it is double protected as follows:
+Only authenticated users can see this view + only the author can see this view,
+because it includes the "Edit" and "Delete" methods of the posts. */
+router.get("/:urlSlug", redirectIfNotAuthenticated, async (req, res) => {
   const post = await Post.findOne({ urlSlug: req.params.urlSlug });
-  if (post == null) {
-    /* if the slug in the address is incorrect*/
-    res.redirect("/"); /* redirect to home page */
-  } else {
-    res.render("posts/show", {
-      post: post
-    });
+  if (post.authorSlug == req.user.urlSlug) {
+    if (post == null) {
+      /* if the slug in the address is incorrect*/
+      res.redirect("/"); /* redirect to home page */
+    } else {
+      res.render("posts/show", {
+        post: post
+      });
+    }
   }
 });
 
