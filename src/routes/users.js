@@ -1,11 +1,17 @@
 const express = require("express");
 const User = require("./../dbmodels/user");
+const Post = require("./../dbmodels/post");
 const bcrypt = require("bcrypt");
 const localAuth = require("passport-local").Strategy;
 const router = express.Router();
+
 /* Using a function to initialize the user authentication to work as wished
 in every login: */
 const passport = require("./../js/configPassport");
+/* Checking if the user is authenticated to see certain pages based on 
+if there is an ongoing session or not: */
+const redirectIfAuthenticated = require("./../js/redirectIfAuthenticated");
+const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated");
 
 /* The Sign Up -page will be in an address ".../users/signup". 
 This function should only be available for non-authenticated users. */
@@ -48,7 +54,7 @@ router.post("/login", redirectIfAuthenticated, (req, res, next) => {
 
 /* User's own page: 
 - shown when signed up or logged in
-- also when user clicks "Own page" button */
+- also when user clicks "Own page" button or their own name on the list of all posts */
 router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
   console.log("Redirecting the user " + req.user.username + " to own profile");
   const user = await User.findOne({ username: req.user.username });
@@ -59,9 +65,42 @@ router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
   } else {
     console.log(req.user);
     console.log(req.isAuthenticated());
+    /* Find the blog posts written by this author and render them only */
+    const blogPosts = await Post.find({ authorSlug: req.user.urlSlug }).sort({
+      timeStamp: "desc"
+    });
     /* redirect to user's own page */
     res.render("users/profile", {
-      user: user
+      user: user,
+      blogPosts: blogPosts
+    });
+  }
+});
+
+/* Viewing other user's feeds: */
+router.get("/:authorSlug", async (req, res) => {
+  console.log(
+    "Redirecting the user " + req.user.username + " to someone else's feed"
+  );
+  feedSlug = req.params.urlSlug;
+  /* If the user clicks their own name, redirect them to their own page */
+  if (feedSlug === req.user.username) {
+    res.redirect("users/profile");
+  }
+  const user = await User.findOne({ urlSlug: feedSlug });
+
+  if (user == null) {
+    // If the urlSlug is faulty = if there's no such user
+    console.log("No user found with given slug " + feedSlug);
+    res.redirect("/"); /* redirect the user to home page */
+  } else {
+    /* Find the blog posts written by this author and render them only */
+    const blogPosts = await Post.find({ authorSlug: feedSlug }).sort({
+      timeStamp: "desc"
+    });
+    res.render("users/feed", {
+      user: user,
+      blogPosts: blogPosts
     });
   }
 });
@@ -106,38 +145,6 @@ function saveUser(path) {
       res.render(`users/${path}`);
     }
   };
-}
-
-/* REDIRECTION FUNCTIONS DEPENDING ON SESSIONS: */
-
-/* redirectIfNotAuthenticated is a function that checks whether the user is a logged in
-user. If it's not, it will be redirecting the user to log in.
-This function is called on pages that is for authenticated users only.
-The isAuthenticated function that this function is using comes with the passport
-
-Note: Login page should have an option to view public posts without logging in.
-* log out page and button should be only visible to logged in users
- */
-function redirectIfNotAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    // If the user is logged in
-    return next(); // Allow whatever action
-  }
-
-  res.redirect("/login"); // Redirect to log in if not logged in
-}
-
-/* redirectIfAuthenticated:
-SEE IF USER HAS ALREADY LOGGED IN BUT STILL TRIES TO LOG IN
--> Prevent the user from doing authentication on top of authentication
-* sign up and log in pages should be hidden from the authenticated users */
-function redirectIfAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    // if logged in
-    return res.redirect("/"); // redirect to home page
-  }
-  // If not authenticated: allow whatever action
-  next();
 }
 
 module.exports = router;
