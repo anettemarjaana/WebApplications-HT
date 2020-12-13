@@ -29,8 +29,8 @@
 
   <body>
     <div class="container">
-      <h1 class="mb-4">Recent posts</h1>
-      <div class="float-sm-right d-inline">
+      <h1 class="mb-4"><%= user.username %>'s posts</h1>
+      <div class="float-sm-right">
         <a href="/users/profile" class="btn btn-success">My blog</a>
         <form
           action="/users/logout?_method=DELETE"
@@ -40,10 +40,10 @@
           <button type="submit" class="btn btn-danger mt-4">Log out</button>
         </form>
       </div>
-      <br />
-      <a href="/posts/new" class="btn btn-success">Let it out!</a>
 
-      <!--This page will contain ALL posts in the system.
+      <br />
+
+      <!--This page will contain a certain user's posts.
         Iterate through the blog posts sent from posts.js:-->
       <% blogPosts.forEach(post => { %>
       <div class="card mt-4">
