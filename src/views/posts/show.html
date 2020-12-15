@@ -36,23 +36,26 @@
           <a href="/users/<%= post.authorSlug %>">
             <h5 class="card-title"><%= post.author %></h5>
           </a>
+
           <div class="card-subtitle text-muted mb-2">
-            <%= post.timeStamp.toLocaleDateString() %>
+            <%= post.timeStamp.toUTCString() %>
           </div>
           <div class="card-text mb-2">
             <%= post.content %>
           </div>
+          <a href="/posts/edit/<%= post.id %>" class="btn btn-info mt-4">Edit</a>
+          <form
+            action="/posts/<%= post.id %>?_method=DELETE"
+            method="POST"
+            class="d-inline"
+          >
+          <button type="submit" class="btn btn-danger mt-4">Delete</a>
+          </form>
         </div>
+        
       </div>
-      <a href="/posts/index" class="btn btn-secondary mt-4">All Posts</a>
-      <a href="/posts/edit/<%= post.id %>" class="btn btn-info mt-4">Edit</a>
-      <form
-        action="/posts/<%= post.id %>?_method=DELETE"
-        method="POST"
-        class="d-inline"
-      >
-      <button type="submit" class="btn btn-danger mt-4">Delete</a>
-      </form>
+      <a href="/posts/index" class="btn btn-secondary mt-4">Public posts</a>
+      <a href="/users/profile" class="btn btn-success mt-4">My blog</a>
     </div>
 
     <script

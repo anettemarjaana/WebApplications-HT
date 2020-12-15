@@ -29,9 +29,10 @@
 
   <body>
     <div class="container">
-      <h1 class="mb-4">Recent posts</h1>
+      <h1 class="mb-4">Public posts</h1>
       <div class="float-sm-right d-inline">
-        <a href="/users/profile" class="btn btn-success">My blog</a>
+        <a href="/posts/new" class="btn btn-success mt-4">Let it out!</a>
+        <a href="/users/profile" class="btn btn-success mt-4">My blog</a>
         <form
           action="/users/logout?_method=DELETE"
           method="POST"
@@ -40,8 +41,7 @@
           <button type="submit" class="btn btn-danger mt-4">Log out</button>
         </form>
       </div>
-      <br />
-      <a href="/posts/new" class="btn btn-success">Let it out!</a>
+      <br /><br />
 
       <!--This page will contain ALL posts in the system.
         Iterate through the blog posts sent from posts.js:-->
@@ -52,7 +52,7 @@
             <h5 class="card-title"><%= post.author %></h5>
           </a>
           <div class="card-subtitle text-muted mb-2">
-            <%= post.timeStamp.toLocaleDateString() %>
+            <%= post.timeStamp.toUTCString() %>
           </div>
           <div class="card-text mb-2">
             <%= post.content %>
@@ -60,6 +60,8 @@
         </div>
       </div>
       <% }) %>
+      <br />
+      <br />
     </div>
 
     <script

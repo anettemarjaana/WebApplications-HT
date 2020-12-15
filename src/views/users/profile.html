@@ -31,18 +31,24 @@
     <div class="container">
       <div class="card mt-4">
         <div class="card-body">
-          <h4 class="card-title">Hello <%= user.username %></h4>
+          <h4 class="card-title">Hello <%= user.username %>!</h4>
+          <p>
+            This is your own blog. Here you can modify your account settings or
+            look at your marvelous posts. Maybe fancy writing a new one?
+          </p>
         </div>
       </div>
-      <a href="/posts/index" class="btn btn-secondary mt-4">All Posts</a>
-      <a href="/posts/new" class="btn btn-success d-inline">Let it out!</a>
+      <a href="/posts/index" class="btn btn-secondary mt-4">Public posts</a>
+      <a href="/posts/new" class="btn btn-success mt-4">Let it out!</a>
       <a href="/users/settings" class="btn btn-info mt-4">Settings</a>
       <form
         action="/users/logout?_method=DELETE"
         method="POST"
         class="d-inline"
       >
-        <button type="submit" class="btn btn-danger mt-4">Log out</button>
+        <button type="submit" class="btn btn-danger mt-4">
+          Log out
+        </button>
       </form>
 
       <!--This page will show the user's own posts.
@@ -53,7 +59,7 @@
           <h5 class="card-title"><%= post.author %></h5>
 
           <div class="card-subtitle text-muted mb-2">
-            <%= post.timeStamp.toLocaleDateString() %>
+            <%= post.timeStamp.toUTCString() %>
           </div>
           <div class="card-text mb-2">
             <%= post.content %>

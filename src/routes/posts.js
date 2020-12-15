@@ -9,10 +9,40 @@ const redirectIfAuthenticated = require("./../js/redirectIfAuthenticated");
 const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated");
 
 /* Render the blog posts from the database on the index page in an order
-"from new to old (desc)".
-Any user is allowed to view the posts. */
+"from new to old (desc)". The user is not seeing their own posts on this index page.
+*/
 router.get("/index", async (req, res) => {
-  const blogPosts = await Post.find().sort({ timeStamp: "desc" });
+  /* Any user is allowed to view the posts that are marked as visibleTo: all */
+  const permissions = ["all"];
+  const permittingUsers = [];
+  const blogPosts = [];
+
+  if (req.isAuthenticated()) {
+    permissions.push("registered");
+
+    /* Find those users that have visibility type "specified" */
+    const specified = await User.find({ visibleTo: "specified" });
+    /* Find those that include this user in their allowed blog readers */
+    for (var i = 0; i < specified.length; i++) {
+      if (specified[i].includes(req.user.username)) {
+        permittingUsers.push(specified[i]);
+      }
+    }
+  }
+
+  /* Loop through permission by permission to get the final list of the users that
+  allow this user to see their posts */
+  for (var i = 0; i < permissions.length; i++) {
+    permittingUsers.push(await User.find({ visibleTo: permissions[i] }));
+  }
+
+  /* Find all the blog posts made by the allowing authors */
+  for (var j = 0; j < permittingUsers.length; j++) {
+    blogPosts.push(await Post.find({ author: permittingUsers[j] }));
+  }
+
+  /* Sort the available blog posts from the newest to oldest and render them. */
+  blogPosts = blogPosts.sort({ timeStamp: "desc" });
   res.render("posts/index", {
     blogPosts: blogPosts
   });
@@ -108,7 +138,7 @@ Only authenticated users can see this view + only the author can see this view,
 because it includes the "Edit" and "Delete" methods of the posts. */
 router.get("/:urlSlug", redirectIfNotAuthenticated, async (req, res) => {
   const post = await Post.findOne({ urlSlug: req.params.urlSlug });
-  if (post.authorSlug == req.user.urlSlug) {
+  if (post.authorSlug === req.user.urlSlug) {
     if (post == null) {
       /* if the slug in the address is incorrect*/
       res.redirect("/"); /* redirect to home page */
@@ -117,6 +147,8 @@ router.get("/:urlSlug", redirectIfNotAuthenticated, async (req, res) => {
         post: post
       });
     }
+  } else {
+    res.redirect("/posts/index");
   }
 });
 

@@ -19,7 +19,19 @@
   />
 </div>
 
-<input type="checkbox" onclick="showPassword()" />Show password
+<input type="checkbox" onclick="showPassword()" />&nbsp;Show password<br /><br />
 
 <a href="/" class="btn btn-secondary">Cancel</a>
 <button type="submit" class="btn btn-primary">Submit</button>
+
+<script>
+  /* This function is used on the forms that require password (Log in and Sign up)*/
+  function showPassword() {
+    var fieldInput = document.getElementById("password");
+    if (fieldInput.type === "password") {
+      fieldInput.type = "text";
+    } else {
+      fieldInput.type = "password";
+    }
+  }
+</script>

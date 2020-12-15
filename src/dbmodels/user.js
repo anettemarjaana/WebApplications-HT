@@ -19,7 +19,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true
-  }
+  },
+  visibleTo: {
+    type: String
+  },
+  permittedUsers: [{ username: String }]
 });
 
 /* The function below is going to be ran within any update of the user */

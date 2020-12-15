@@ -12,29 +12,17 @@ if there is an ongoing session or not: */
 const redirectIfAuthenticated = require("./../js/redirectIfAuthenticated");
 const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated");
 
-/* This function is used on the forms that require password (Log in and Sign up)*/
-function showPassword() {
-  var fieldInput = document.getElementById("password");
-  if (fieldInput.type === "password") {
-    fieldInput.type = "text";
-  } else {
-    fieldInput.type = "password";
-  }
-}
-
 /* The Sign Up -page will be in an address ".../users/signup". 
 This function should only be available for non-authenticated users. */
 router.get("/signup", redirectIfAuthenticated, (req, res) => {
   res.render("users/signup", {
-    user: new User(),
-    showPassword()
+    user: new User()
   });
 });
 
 /* The Log In -page will be in an address ".../users/login". */
 router.get("/login", redirectIfAuthenticated, (req, res) => {
-  res.render("users/login", {
-    showPassword()});
+  res.render("users/login");
 });
 
 /* Once the Register-button is hit, this function gets ran.
@@ -89,24 +77,64 @@ router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
 });
 
 /* Viewing other users' feeds: 
-NOW ONLY WORKING IF A USER IS LOGGED IN. */
+options of "visible to" variable:
+  - everyone
+  - authenticated
+  - specified 
+  - myself
+  */
 router.get("/:authorSlug", async (req, res) => {
   const feedSlug = req.params.authorSlug;
-  console.log(
-    "The user " + req.user.username + " wants to reach feed: " + feedSlug
-  );
-  /* If the user clicks their own name, redirect them to their own page */
-  if (feedSlug === req.user.urlSlug) {
-    console.log("The user clicked their own name. Redirecting to profile.");
-    res.redirect("/users/profile");
-  }
+  const feedVisible = req.params.visibleTo;
+  let pass = 0; // Pass 0 means the user can not access the page, 1 means access is granted
+
+  /* Fetch the user from the database of users */
   const user = await User.findOne({ urlSlug: feedSlug });
 
   if (user == null) {
     // If the urlSlug is faulty = if there's no such user
     console.log("No user found with given slug " + feedSlug);
     res.redirect("/"); /* redirect the user to home page */
-  } else {
+  }
+
+  /* These visibility permissions don't depend on whether the user is authenticated
+  or not: */
+  if (feedVisible === "me") {
+    // Should not happen as those posts should never be visible
+    res.redirect("/posts/index");
+  }
+
+  if (feedVisible === "all") {
+    pass = 1;
+  }
+
+  /* These permissions take an authenticated user reaching the feed: */
+  if (req.isAuthenticated()) {
+    /* If the user is logged in */
+    console.log(
+      "Authenticated user " +
+        req.user.username +
+        " wants to reach blog: " +
+        feedSlug
+    );
+    /* If the user clicked their own name, redirect them to their own page */
+    if (feedSlug === req.user.urlSlug) {
+      console.log("The user clicked their own name. Redirecting to profile.");
+      res.redirect("/users/profile");
+    }
+    if (feedVisible === "registered") {
+      pass = 1;
+    } else if (feedVisible === "specified") {
+      /* Check whether this user is on the blog's list of permitted users */
+      if (req.params.permittedUsers.includes(req.user.username)) {
+        pass = 1;
+      } else {
+        res.redirect("/posts/index");
+      }
+    }
+  }
+  /* If the reaching user has passed all the requirements: */
+  if (pass === 1) {
     /* Find the blog posts written by this author and render them only */
     const blogPosts = await Post.find({ authorSlug: feedSlug }).sort({
       timeStamp: "desc"
@@ -131,41 +159,49 @@ function saveUser(path) {
     and save them in the database */
     let user = req.user;
     user.username = req.body.username;
+
     /* Check if the username is already taken */
     const checkUser = await User.findOne({ username: user.username });
     if (checkUser) {
       if (checkUser.username === user.username) {
         let message = "This username is not available.";
+        res.render(`users/${path}`);
         console.log(message);
-        req.flash(message);
+        req.flash("info", message);
+      }
+    } else {
+      /* Use bcrypt and a hashed password for securing the password: */
+      const securePassword = await bcrypt.hash(req.body.password, 10);
+      user.password = securePassword;
+      user.visibleTo = req.body.visibleTo;
+
+      console.log(
+        "Got password and the username " +
+          user.username +
+          ". The blog will be visible to " +
+          user.visibleTo
+      );
+      try {
+        /* If there's a success: */
+        /* Wait till the user is saved in database and then redirect to page /users/id 
+      THIS OR TO LOGIN?*/
+        user = await user.save();
+        console.log("Inserted 1 user");
+
+        /* Passport login function to establish a login session: */
+        req.login(user, function (err) {
+          if (err) {
+            console.log(err);
+            res.render(`users/${path}`);
+          }
+          res.redirect("/users/profile");
+        });
+      } catch (e) {
+        /* If a required informatinon is missing */
+        /* Stay on the same page*/
+        console.log(e);
         res.render(`users/${path}`);
       }
-    }
-    /* Use bcrypt and a hashed password for securing the password: */
-    const securePassword = await bcrypt.hash(req.body.password, 10);
-    user.password = securePassword;
-
-    console.log("Got password and the username " + user.username);
-    try {
-      /* If there's a success: */
-      /* Wait till the user is saved in database and then redirect to page /users/id 
-      THIS OR TO LOGIN?*/
-      user = await user.save();
-      console.log("Inserted 1 user");
-
-      /* Passport login function to establish a login session: */
-      req.login(user, function (err) {
-        if (err) {
-          console.log(err);
-          res.render(`users/${path}`);
-        }
-        res.redirect("/users/profile");
-      });
-    } catch (e) {
-      /* If a required informatinon is missing */
-      /* Stay on the same page*/
-      console.log(e);
-      res.render(`users/${path}`);
     }
   };
 }

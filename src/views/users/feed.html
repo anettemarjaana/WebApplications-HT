@@ -29,9 +29,10 @@
 
   <body>
     <div class="container">
-      <h1 class="mb-4"><%= user.username %>'s posts</h1>
+      <h1 class="mb-4"><%= user.username %>'s blog</h1>
       <div class="float-sm-right">
-        <a href="/users/profile" class="btn btn-success">My blog</a>
+        <a href="/posts/index" class="btn btn-secondary mt-4">Public posts</a>
+        <a href="/users/profile" class="btn btn-success mt-4">My blog</a>
         <form
           action="/users/logout?_method=DELETE"
           method="POST"
@@ -42,17 +43,17 @@
       </div>
 
       <br />
+      <br />
 
       <!--This page will contain a certain user's posts.
         Iterate through the blog posts sent from users.js:-->
       <% blogPosts.forEach(post => { %>
       <div class="card mt-4">
         <div class="card-body">
-          <a href="/users/<%= post.authorSlug %>">
-            <h5 class="card-title"><%= post.author %></h5>
-          </a>
+          <h5 class="card-title"><%= post.author %></h5>
+
           <div class="card-subtitle text-muted mb-2">
-            <%= post.timeStamp.toLocaleDateString() %>
+            <%= post.timeStamp.toUTCString() %>
           </div>
           <div class="card-text mb-2">
             <%= post.content %>
