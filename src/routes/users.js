@@ -2,7 +2,6 @@ const express = require("express");
 const User = require("./../dbmodels/user");
 const Post = require("./../dbmodels/post");
 const bcrypt = require("bcrypt");
-const localAuth = require("passport-local").Strategy;
 const router = express.Router();
 
 /* Using a function to initialize the user authentication to work as wished
@@ -13,17 +12,29 @@ if there is an ongoing session or not: */
 const redirectIfAuthenticated = require("./../js/redirectIfAuthenticated");
 const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated");
 
+/* This function is used on the forms that require password (Log in and Sign up)*/
+function showPassword() {
+  var fieldInput = document.getElementById("password");
+  if (fieldInput.type === "password") {
+    fieldInput.type = "text";
+  } else {
+    fieldInput.type = "password";
+  }
+}
+
 /* The Sign Up -page will be in an address ".../users/signup". 
 This function should only be available for non-authenticated users. */
 router.get("/signup", redirectIfAuthenticated, (req, res) => {
   res.render("users/signup", {
-    user: new User()
+    user: new User(),
+    showPassword()
   });
 });
 
 /* The Log In -page will be in an address ".../users/login". */
 router.get("/login", redirectIfAuthenticated, (req, res) => {
-  res.render("users/login");
+  res.render("users/login", {
+    showPassword()});
 });
 
 /* Once the Register-button is hit, this function gets ran.
@@ -80,7 +91,7 @@ router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
 /* Viewing other users' feeds: 
 NOW ONLY WORKING IF A USER IS LOGGED IN. */
 router.get("/:authorSlug", async (req, res) => {
-  feedSlug = req.params.authorSlug;
+  const feedSlug = req.params.authorSlug;
   console.log(
     "The user " + req.user.username + " wants to reach feed: " + feedSlug
   );
@@ -120,6 +131,16 @@ function saveUser(path) {
     and save them in the database */
     let user = req.user;
     user.username = req.body.username;
+    /* Check if the username is already taken */
+    const checkUser = await User.findOne({ username: user.username });
+    if (checkUser) {
+      if (checkUser.username === user.username) {
+        let message = "This username is not available.";
+        console.log(message);
+        req.flash(message);
+        res.render(`users/${path}`);
+      }
+    }
     /* Use bcrypt and a hashed password for securing the password: */
     const securePassword = await bcrypt.hash(req.body.password, 10);
     user.password = securePassword;
@@ -129,7 +150,7 @@ function saveUser(path) {
       /* If there's a success: */
       /* Wait till the user is saved in database and then redirect to page /users/id 
       THIS OR TO LOGIN?*/
-      post = await user.save();
+      user = await user.save();
       console.log("Inserted 1 user");
 
       /* Passport login function to establish a login session: */

@@ -96,7 +96,7 @@ express-flash shows messages to the user (wrong password etc.)
 ------ NEXT UP: --------
 [] Create a welcome page (index.html) for login with an animation: https://mdbootstrap.com/docs/jquery/css/animations/
     * Support picture storage and display?
-[] Limit the length of blog posts to 300 characters
+[x] Limit the length of blog posts to 300 characters
 [] Check the if username-unique works
 [] Switch the timestamps to Finnish form
 [] Make it look nice through CSS

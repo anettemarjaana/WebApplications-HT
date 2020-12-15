@@ -25,10 +25,19 @@ const postSchema = new mongoose.Schema({
   }
 });
 
-/* The function below is going to be ran within any update of the post */
+/* The function below is going to be ran within any update of the post. It's
+forming a url slug for the post based on the content of it.
+If the content is longer than 25 characters, the slug will be a shortened
+version of the content. */
 postSchema.pre("validate", function (next) {
+  let slug = "";
   if (this.content) {
-    this.urlSlug = slugify(this.content, { lower: true, strict: true });
+    if (this.content.length > 25) {
+      slug = this.content.substring(0, 24);
+    } else {
+      slug = this.content;
+    }
+    this.urlSlug = slugify(slug, { lower: true, strict: true });
   }
   next();
 });
