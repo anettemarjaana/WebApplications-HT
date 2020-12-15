@@ -14,9 +14,13 @@ const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated")
 router.get("/index", async (req, res) => {
   /* Any user is allowed to view the posts that are marked as visibleTo: all */
   let permissions = ["all"];
+  /* Preparing the arrays: the permittingUsers will contain the users that allow this user
+  to view their blog.
+  The blogPosts will finally contain their posts. */
   let permittingUsers = [];
   let blogPosts = [];
 
+  /* push appends an element to the end of the array. */
   if (req.isAuthenticated()) {
     permissions.push("registered");
 
@@ -43,6 +47,8 @@ router.get("/index", async (req, res) => {
 
   /* Sort the available blog posts from the newest to oldest and render them. */
   blogPosts = blogPosts.sort({ timeStamp: "desc" });
+  /* ^ That gives an error:
+  TypeError: The comparison function must be either a function or undefined */
   res.render("posts/index", {
     blogPosts: blogPosts
   });
