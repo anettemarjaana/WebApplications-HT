@@ -94,16 +94,8 @@ express-flash shows messages to the user (wrong password etc.)
     test users: marja and pekka
 
 ------ NEXT UP: --------
-[] Create a welcome page (index.html) for login with an animation: https://mdbootstrap.com/docs/jquery/css/animations/
-    * Support picture storage and display?
-[x] Limit the length of blog posts to 300 characters
-[x] Check the if username-unique works
-[x] Switch the timestamps to a format with exact time
 [] Make it look nice through CSS
 [] Make viewing user's feeds possible even if not logged in 
-
-EXTRA FUNCTIONS TO CONSIDER AFTER:
-[] Settings page: change user info later (not username)
 [] Add access permissions user by user:
     - blog is open to...
         - everyone
@@ -119,12 +111,8 @@ as a list in the user-schema.
 Then router.get("/:authorSlug"...) function checks if the posts are available to the
 current user (isAuthenticated or not). Also posts/index should be changed too.
 
-[] Support pictures storage and display
-
-[] Search function by hashtags? sphinx or elasticsearch?
-
-[] Provide data from the application through an API
-    * document it through API Blueprint
+[] Settings page: change user info later (not username)
+    * like edit post
 
 See after:
 - Returning to Rahti
