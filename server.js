@@ -77,6 +77,9 @@ app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 /* Now we can save views as .html instead of .ejs */
 
+/* Using images folder for the logo image: */
+app.use(express.static(path.join(__dirname + "./src/")));
+
 /* TAKE OTHER LIBRARIES INTO USE: */
 /* For fill-out forms: */
 app.use(express.urlencoded({ extended: false }));
