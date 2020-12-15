@@ -13,9 +13,9 @@ const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated")
 */
 router.get("/index", async (req, res) => {
   /* Any user is allowed to view the posts that are marked as visibleTo: all */
-  const permissions = ["all"];
-  const permittingUsers = [];
-  const blogPosts = [];
+  let permissions = ["all"];
+  let permittingUsers = [];
+  let blogPosts = [];
 
   if (req.isAuthenticated()) {
     permissions.push("registered");
