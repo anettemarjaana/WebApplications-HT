@@ -17,8 +17,8 @@ router.get("/index", async (req, res) => {
   /* Preparing the arrays: the permittingUsers will contain the users that allow this user
   to view their blog.
   The blogPosts will finally contain their posts. */
-  let permittingUsers = [];
-  let blogPosts = [];
+  var permittingUsers = [];
+  var blogPosts = [];
 
   /* push appends an element to the end of the array. */
   if (req.isAuthenticated()) {
@@ -28,30 +28,44 @@ router.get("/index", async (req, res) => {
     const specified = await User.find({ visibleTo: "specified" });
     /* Find those that include this user in their allowed blog readers */
     for (var i = 0; i < specified.length; i++) {
-      if (specified[i].includes(req.user.username)) {
+      if (specified[i].permittedUsers.includes(req.user.username)) {
         permittingUsers.push(specified[i]);
       }
     }
   }
+  console.log("Permitting users:");
 
   /* Loop through permission by permission to get the final list of the users that
   allow this user to see their posts */
   for (var i = 0; i < permissions.length; i++) {
+    console.log("Permission: " + permissions[i]);
     permittingUsers.push(await User.find({ visibleTo: permissions[i] }));
   }
+  console.log(permittingUsers);
+  console.log(
+    "Username of the first permitting user: " + permittingUsers[0].username
+  );
 
-  /* Find all the blog posts made by the allowing authors */
-  for (var j = 0; j < permittingUsers.length; j++) {
-    blogPosts.push(await Post.find({ author: permittingUsers[j] }));
+  console.log("Blog posts:");
+  if (permittingUsers.length > 0) {
+    /* Find all the blog posts made by the allowing authors */
+    for (var j = 0; j < permittingUsers.length; j++) {
+      blogPosts.push(await Post.find({ author: permittingUsers[j].username }));
+    }
+
+    console.log(blogPosts);
+    if (blogPosts.length > 0) {
+      console.log("Sorting blog posts");
+      /* Sort the available blog posts from the newest to oldest and render them. */
+      blogPosts = blogPosts.sort({ timeStamp: "desc" });
+      /* ^ That gives an error:
+    TypeError: The comparison function must be either a function or undefined */
+      console.log("Rendering blog posts");
+      res.render("posts/index", {
+        blogPosts: blogPosts
+      });
+    }
   }
-
-  /* Sort the available blog posts from the newest to oldest and render them. */
-  blogPosts = blogPosts.sort({ timeStamp: "desc" });
-  /* ^ That gives an error:
-  TypeError: The comparison function must be either a function or undefined */
-  res.render("posts/index", {
-    blogPosts: blogPosts
-  });
 });
 
 /* The New Post -page will be in an address ".../posts/new".

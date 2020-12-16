@@ -55,15 +55,12 @@ router.post("/login", redirectIfAuthenticated, (req, res, next) => {
 - shown when signed up or logged in
 - also when user clicks "Own page" button or their own name on the list of all posts */
 router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
-  console.log("Redirecting the user " + req.user.username + " to own profile");
   const user = await User.findOne({ username: req.user.username });
   if (user == null) {
     console.log("No user found");
     /* if there's no authenticated user (in case) */
     res.redirect("/"); /* redirect to home page */
   } else {
-    console.log(req.user);
-    console.log(req.isAuthenticated());
     /* Find the blog posts written by this author and render them only */
     const blogPosts = await Post.find({ authorSlug: req.user.urlSlug }).sort({
       timeStamp: "desc"
@@ -102,9 +99,7 @@ router.get("/:authorSlug", async (req, res) => {
   if (feedVisible === "me") {
     // Should not happen as those posts should never be visible
     res.redirect("/posts/index");
-  }
-
-  if (feedVisible === "all") {
+  } else if (feedVisible === "all") {
     pass = 1;
   }
 

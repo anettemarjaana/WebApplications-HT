@@ -31,11 +31,12 @@ If the content is longer than 25 characters, the slug will be a shortened
 version of the content. */
 postSchema.pre("validate", function (next) {
   let slug = "";
+  const randomValue = Math.floor(Math.random() * 3001).toString(); // for randomization of slugs
   if (this.content) {
-    if (this.content.length > 25) {
-      slug = this.content.substring(0, 24);
+    if (this.content.length > 40) {
+      slug = this.content.substring(0, 39) + randomValue;
     } else {
-      slug = this.content;
+      slug = this.content + randomValue;
     }
     this.urlSlug = slugify(slug, { lower: true, strict: true });
   }
