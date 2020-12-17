@@ -141,6 +141,7 @@ router.get("/:authorSlug", async (req, res) => {
       if (req.params.permittedUsers.includes(req.user.username)) {
         pass = 1;
       } else {
+        pass = 0;
         res.redirect("/posts/index");
       }
     }

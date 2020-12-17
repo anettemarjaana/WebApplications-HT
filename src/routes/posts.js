@@ -47,7 +47,7 @@ router.get("/index", async (req, res) => {
 
   if (permittingUsers.length > 0) {
     /* Find all the blog posts made by the allowing authors */
-    blogPosts = await Post.find({ author: usernames }).sort({ timeStamp: 1 });
+    blogPosts = await Post.find({ author: usernames }).sort({ timeStamp: -1 });
     if (blogPosts.length > 0) {
       console.log("Rendering blog posts");
       res.render("posts/index", {
