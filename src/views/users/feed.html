@@ -26,22 +26,18 @@
     />
     <title>Angler</title>
   </head>
-  <body>
+  <body onload="showBefriendButton();">
     <div class="container">
       <h1 class="mb-4"><%= user.username %>'s blog</h1>
       <div class="float-sm-left">
         <button
           id="befriend"
           onclick="befriendButton()"
-          type="button"
           style="display: none;"
           class="btn btn-success mt-4"
         >
           text
         </button>
-        <script>
-          showBefriendButton();
-        </script>
       </div>
       <div class="float-sm-right">
         <a href="/posts/index" class="btn btn-secondary mt-4">Public posts</a>
@@ -92,7 +88,7 @@ This function is used to show the "Befriend"-button only to the users
             that have "specified" in their visibleTo -value. It enables the user to access
             the other one's posts.*/
       function showBefriendButton() {
-        alert("Hello!");
+        alert("Hello: ");
         console.log("In showBefriendButton function");
         var friendlyButton = document.getElementById("befriend");
         /* If a logged in user is viewing the page */
