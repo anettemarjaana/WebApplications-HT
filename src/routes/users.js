@@ -154,7 +154,8 @@ router.get("/:authorSlug", async (req, res) => {
     });
     res.render("users/feed", {
       user: user,
-      blogPosts: blogPosts
+      blogPosts: blogPosts,
+      viewer: req.user
     });
   } else {
     console.log("Pass: " + pass);
@@ -190,6 +191,13 @@ function saveUser(path) {
       const securePassword = await bcrypt.hash(req.body.password, 10);
       user.password = securePassword;
       user.visibleTo = req.body.visibleTo;
+      /* If the access permission is "specified", the user itself should be
+      included in the permittedUsers list:*/
+      if (user.visibleTo === "specified") {
+        if (!user.permittedUsers.includes(user.username)) {
+          user.permittedUsers.push(user.username);
+        }
+      }
 
       console.log(
         "Got password and the username " +

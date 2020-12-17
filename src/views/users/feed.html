@@ -26,10 +26,16 @@
     />
     <title>Angler</title>
   </head>
-
   <body>
+  
     <div class="container">
       <h1 class="mb-4"><%= user.username %>'s blog</h1>
+      <div class="float-sm-left">
+        <button id="befriend" onclick="befriendButton()" type="submit" style="display:none" class="btn btn-success mt-4">text</submit>
+      <script>
+        showBefriendButton();
+      </script>
+      </div>
       <div class="float-sm-right">
         <a href="/posts/index" class="btn btn-secondary mt-4">Public posts</a>
         <a href="/users/profile" class="btn btn-success mt-4">My blog</a>
@@ -62,7 +68,6 @@
       </div>
       <% }) %>
     </div>
-
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -73,5 +78,39 @@
       integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
       crossorigin="anonymous"
     ></script>
+    <script type="text/javascript">
+    /* req.user sends the parameters viewer=req.user and user=req.params.
+
+This function is used to show the "Befriend"-button only to the users
+            that have "specified" in their visibleTo -value. It enables the user to access
+            the other one's posts.*/
+function showBefriendButton() {
+  alert("Hello!");
+  console.log("In showBefriendButton function");
+  var friendlyButton = document.getElementById("befriend");
+  /* If a logged in user is viewing the page */
+  if (viewer.isAuthenticated()) {
+    /* If the user has set the access permission to "specified" */
+    if (viewer.visibleTo === "specified") {
+      /* Only these users can add specified permissions for other users. */
+      friendlyButton.style.display = "block";
+      if (viewer.permittedUsers.includes(user.username)) {
+        friendlyButton.innerHTML = "Block";
+      } else {
+        friendlyButton.innerHTML = "Befriend";
+      }
+    }
+  }
+}
+
+/* onClick function for the button: */
+function befriendButton() {
+  var friendlyButton = document.getElementById("befriend");
+  if (friendlyButton.innerHTML === "Befriend") {
+    friendlyButton.innerHTML = "Block";
+  } else {
+    friendlyButton.innerHTML = "Befriend";
+  }
+}</script>
   </body>
 </html>
