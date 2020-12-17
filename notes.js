@@ -94,9 +94,8 @@ express-flash shows messages to the user (wrong password etc.)
     test users: marja and pekka
 
 ------ NEXT UP: --------
-[] Make it look nice through CSS
-[] Make viewing user's feeds possible even if not logged in 
-[] Add access permissions user by user:
+[x] Make viewing user's feeds possible even if not logged in 
+[x] Add access permissions user by user:
     - blog is open to...
         - everyone
         - registered users only
@@ -111,12 +110,19 @@ as a list in the user-schema.
 Then router.get("/:authorSlug"...) function checks if the posts are available to the
 current user (isAuthenticated or not). Also posts/index should be changed too.
 
-[] Settings page: change user info later (not username)
+[x] Settings page: change user info later (not username)
     * like edit post
+
+[] Make it look nice through CSS
+[] Befriend/Block button functionality for "specified"
+[] My blog and Log in/Log out buttons shown depending on req.isAuthenticated()
+    * "/"
+    * "/posts/index"
+    * "/users/feed"
 
 See after:
 - Returning to Rahti
-- how to have the environmental variables there?
+- the environmental variables there?
     * dotenv library + .env file
 
 
