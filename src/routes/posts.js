@@ -9,7 +9,7 @@ const redirectIfAuthenticated = require("./../js/redirectIfAuthenticated");
 const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated");
 
 /* Render the blog posts from the database on the index page in an order
-"from new to old (desc)". The user is not seeing their own posts on this index page.
+"from new to old (desc)". The user is seeing also their own posts on this index page.
 */
 router.get("/index", async (req, res) => {
   /* Any user is allowed to view the posts that are marked as visibleTo: all */
@@ -32,34 +32,23 @@ router.get("/index", async (req, res) => {
         permittingUsers.push(specified[i]);
       }
     }
+    /* If the user's own posts are only visible to themselves, they'll also see them
+    there due to this function: */
+    if (req.user.visibleTo === "me") {
+      permittingUsers.push(req.user);
+    }
   }
-  console.log("Permitting users:");
 
-  /* Loop through permission by permission to get the final list of the users that
-  allow this user to see their posts */
-  for (var i = 0; i < permissions.length; i++) {
-    console.log("Permission: " + permissions[i]);
-    permittingUsers.push(await User.find({ visibleTo: permissions[i] }));
-  }
-  console.log(permittingUsers);
-  console.log(
-    "Username of the first permitting user: " + permittingUsers[0].username
-  );
+  /* Get the final list of the users that allow this user to see their posts */
+  permittingUsers.push(...(await User.find({ visibleTo: permissions })));
 
-  console.log("Blog posts:");
+  let usernames = [];
+  permittingUsers.forEach((user) => usernames.push(user.username));
+
   if (permittingUsers.length > 0) {
     /* Find all the blog posts made by the allowing authors */
-    for (var j = 0; j < permittingUsers.length; j++) {
-      blogPosts.push(await Post.find({ author: permittingUsers[j].username }));
-    }
-
-    console.log(blogPosts);
+    blogPosts = await Post.find({ author: usernames }).sort({ timeStamp: 1 });
     if (blogPosts.length > 0) {
-      console.log("Sorting blog posts");
-      /* Sort the available blog posts from the newest to oldest and render them. */
-      blogPosts = blogPosts.sort({ timeStamp: "desc" });
-      /* ^ That gives an error:
-    TypeError: The comparison function must be either a function or undefined */
       console.log("Rendering blog posts");
       res.render("posts/index", {
         blogPosts: blogPosts

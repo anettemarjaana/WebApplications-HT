@@ -25,6 +25,17 @@ router.get("/login", redirectIfAuthenticated, (req, res) => {
   res.render("users/login");
 });
 
+/* The Settings-page will be in an address ".../users/edit". 
+This function renders the settings view and prefills the form fields with
+the selected user. 
+Only a logged in user is allowed to use settings. */
+router.get("/settings/:id", redirectIfNotAuthenticated, async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.render("users/settings", {
+    user: user
+  });
+});
+
 /* Once the Register-button is hit, this function gets ran.
 This function should only be available for non-authenticated users. */
 router.post(
@@ -36,6 +47,17 @@ router.post(
     next();
   },
   saveUser("signup")
+);
+
+/* A function for submitting user settings. */
+router.put(
+  "/:id",
+  redirectIfNotAuthenticated,
+  async (req, res, next) => {
+    req.user = await User.findById(req.params.id);
+    next();
+  },
+  saveUser("settings")
 );
 
 /* Once the Log in -button is hit, the program will proceed with
@@ -74,7 +96,7 @@ router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
 });
 
 /* Viewing other users' feeds: 
-options of "visible to" variable:
+* options of "visible to" variable:
   - everyone
   - authenticated
   - specified 
@@ -82,11 +104,12 @@ options of "visible to" variable:
   */
 router.get("/:authorSlug", async (req, res) => {
   const feedSlug = req.params.authorSlug;
-  const feedVisible = req.params.visibleTo;
+  const user = await User.findOne({ username: feedSlug });
+  const feedVisible = user.visibleTo;
   let pass = 0; // Pass 0 means the user can not access the page, 1 means access is granted
 
+  console.log("feedVisible: " + feedVisible);
   /* Fetch the user from the database of users */
-  const user = await User.findOne({ urlSlug: feedSlug });
 
   if (user == null) {
     // If the urlSlug is faulty = if there's no such user
@@ -99,19 +122,13 @@ router.get("/:authorSlug", async (req, res) => {
   if (feedVisible === "me") {
     // Should not happen as those posts should never be visible
     res.redirect("/posts/index");
-  } else if (feedVisible === "all") {
+  }
+  if (feedVisible === "all") {
     pass = 1;
   }
 
   /* These permissions take an authenticated user reaching the feed: */
   if (req.isAuthenticated()) {
-    /* If the user is logged in */
-    console.log(
-      "Authenticated user " +
-        req.user.username +
-        " wants to reach blog: " +
-        feedSlug
-    );
     /* If the user clicked their own name, redirect them to their own page */
     if (feedSlug === req.user.urlSlug) {
       console.log("The user clicked their own name. Redirecting to profile.");
@@ -130,6 +147,7 @@ router.get("/:authorSlug", async (req, res) => {
   }
   /* If the reaching user has passed all the requirements: */
   if (pass === 1) {
+    console.log("Pass: " + pass);
     /* Find the blog posts written by this author and render them only */
     const blogPosts = await Post.find({ authorSlug: feedSlug }).sort({
       timeStamp: "desc"
@@ -138,6 +156,9 @@ router.get("/:authorSlug", async (req, res) => {
       user: user,
       blogPosts: blogPosts
     });
+  } else {
+    console.log("Pass: " + pass);
+    res.redirect("/posts/index");
   }
 });
 
