@@ -1,0 +1,16 @@
+@import "/src/css/node_modules/bootstrap/scss/bootstrap";
+
+@import url("https://fonts.googleapis.com/css2?family=Crafty+Girls&display=swap");
+
+$theme-colors: (
+  "primary": #f0aa29,
+  "danger": #044a70,
+  "angler": #15ad91
+);
+
+anglerLogo {
+  color: #15ad91;
+  font-family: "Crafty Girls", cursive;
+  font-size: 100px;
+  text-shadow: 1px 1px 15px #333;
+}

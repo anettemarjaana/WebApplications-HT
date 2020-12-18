@@ -9,7 +9,6 @@ const passport = require("passport");
 const user = require("./src/js/userSerialization");
 const flash = require("express-flash");
 const session = require("express-session");
-const bootstrap = require("bootstrap");
 
 /* Routers for handling users and their blog posts */
 const postRouter = require("./src/routes/posts");
@@ -104,6 +103,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 /* Allow showing flash messages to the user: */
 app.use(flash());
+/* Settings for Bootstrap (responsive design)*/
+app.use(
+  "/src/js",
+  express.static(__dirname + "/node_modules/bootstrap/dist/js")
+);
+app.use("/src/js", express.static(__dirname + "/node_modules/jquery/dist"));
+app.use(
+  "/src/css",
+  express.static(__dirname + "/node_modules/bootstrap/dist/css")
+);
 
 /* SET THE FIRST PAGE THE USER LANDS ON
 index.html should be welcome page unless logged in.*/
