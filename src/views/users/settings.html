@@ -30,8 +30,13 @@
   <body>
     <div class="container">
       <h1 class="mb-4">Settings</h1>
+      <p>
+        At the moment your blog is visible to the user group:
+        <b><%= user.visibleTo %></b>. You can change this choice in your
+        Settings below!
+      </p>
 
-      <form action="/users/<%= user.id %>?_method=PUT" method="POST">
+      <form action="/users/<%= user.urlSlug %>?_method=PUT" method="POST">
         <div class="form-group">
           <label for="username">Username</label>
           <input

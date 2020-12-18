@@ -1,3 +1,8 @@
-h1.anglerLogo {
+@import url("https://fonts.googleapis.com/css2?family=Crafty+Girls&display=swap");
+
+anglerLogo {
   color: #04d9b2;
+  font-family: "Crafty Girls", cursive;
+  font-size: 100px;
+  text-shadow: 1px 1px 15px #333;
 }

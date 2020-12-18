@@ -34,9 +34,9 @@ postSchema.pre("validate", function (next) {
   const randomValue = Math.floor(Math.random() * 3001).toString(); // for randomization of slugs
   if (this.content) {
     if (this.content.length > 40) {
-      slug = this.content.substring(0, 39) + randomValue;
+      slug = this.content.substring(0, 39) + "-" + randomValue;
     } else {
-      slug = this.content + randomValue;
+      slug = this.content + "-" + randomValue;
     }
     this.urlSlug = slugify(slug, { lower: true, strict: true });
   }

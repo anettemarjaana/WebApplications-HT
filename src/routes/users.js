@@ -29,12 +29,17 @@ router.get("/login", redirectIfAuthenticated, (req, res) => {
 This function renders the settings view and prefills the form fields with
 the selected user. 
 Only a logged in user is allowed to use settings. */
-router.get("/settings/:id", redirectIfNotAuthenticated, async (req, res) => {
-  const user = await User.findById(req.params.id);
-  res.render("users/settings", {
-    user: user
-  });
-});
+router.get(
+  "/settings/:urlSlug",
+  redirectIfNotAuthenticated,
+  async (req, res) => {
+    const user = await User.findOne({ urlSlug: req.params.urlSlug });
+    console.log("Found user " + user.username + ". Rendering settings");
+    res.render("users/settings", {
+      user: user
+    });
+  }
+);
 
 /* Once the Register-button is hit, this function gets ran.
 This function should only be available for non-authenticated users. */
@@ -51,13 +56,13 @@ router.post(
 
 /* A function for submitting user settings. */
 router.put(
-  "/:id",
+  "/:urlSlug",
   redirectIfNotAuthenticated,
   async (req, res, next) => {
-    req.user = await User.findById(req.params.id);
+    req.user = await User.findOne({ urlSlug: req.params.urlSlug });
     next();
   },
-  saveUser("settings")
+  saveUser("profile")
 );
 
 /* Once the Log in -button is hit, the program will proceed with
@@ -171,48 +176,56 @@ router.delete("/logout", redirectIfNotAuthenticated, (req, res) => {
   res.redirect("/");
 });
 
+/* This function is used in sign up and settings of the user: */
 function saveUser(path) {
   return async (req, res) => {
     /* Fetch the information of the user from the _formfields
     and save them in the database */
     let user = req.user;
-    user.username = req.body.username;
-
-    /* Check if the username is already taken */
-    const checkUser = await User.findOne({ username: user.username });
-    if (checkUser) {
-      if (checkUser.username === user.username) {
-        let message = "This username is not available.";
-        res.render(`users/${path}`);
-        console.log(message);
-        req.flash("info", message);
-      }
+    if (req.body.username) {
+      // sign up
+      user.username = req.body.username;
     } else {
-      /* Use bcrypt and a hashed password for securing the password: */
-      const securePassword = await bcrypt.hash(req.body.password, 10);
-      user.password = securePassword;
-      user.visibleTo = req.body.visibleTo;
-      /* If the access permission is "specified", the user itself should be
-      included in the permittedUsers list:*/
-      if (user.visibleTo === "specified") {
-        if (!user.permittedUsers.includes(user.username)) {
-          user.permittedUsers.push(user.username);
+      // settings
+      user.username = req.user.username;
+    }
+    /* Check if the username is already taken if signing up */
+    if (path === "signup") {
+      const checkUser = await User.findOne({ username: user.username });
+      if (checkUser) {
+        if (checkUser.username === user.username) {
+          let message = "This username is not available.";
+          res.render(`users/${path}`);
+          console.log(message);
+          req.flash("info", message);
         }
       }
+    }
+    /* Use bcrypt and a hashed password for securing the password: */
+    const securePassword = await bcrypt.hash(req.body.password, 10);
+    user.password = securePassword;
 
-      console.log(
-        "Got password and the username " +
-          user.username +
-          ". The blog will be visible to " +
-          user.visibleTo
-      );
-      try {
-        /* If there's a success: */
-        /* Wait till the user is saved in database and then redirect to page /users/id 
-      THIS OR TO LOGIN?*/
-        user = await user.save();
-        console.log("Inserted 1 user");
+    /* Setting the access permission: */
+    user.visibleTo = req.body.visibleTo;
+    /* If the access permission is "specified", the user itself should be
+    included in the permittedUsers list:*/
+    if (user.visibleTo === "specified") {
+      if (!user.permittedUsers.includes(user.username)) {
+        user.permittedUsers.push(user.username);
+      }
+    }
+    console.log(user);
 
+    /* If there's a success:
+    Wait till the user is saved in database and then redirect
+      to page /users/profile
+    */
+    try {
+      user = await user.save();
+      console.log("Inserted 1 user");
+
+      /* If the user is not logged in already: */
+      if (path === "signup") {
         /* Passport login function to establish a login session: */
         req.login(user, function (err) {
           if (err) {
@@ -221,12 +234,15 @@ function saveUser(path) {
           }
           res.redirect("/users/profile");
         });
-      } catch (e) {
-        /* If a required informatinon is missing */
-        /* Stay on the same page*/
-        console.log(e);
-        res.render(`users/${path}`);
+      } else {
+        /* If the user is doing settings: */
+        res.redirect("/users/profile");
       }
+    } catch (e) {
+      /* If a required information is missing 
+       --> stay on the same page*/
+      console.log(e);
+      res.render(`users/${path}`);
     }
   };
 }

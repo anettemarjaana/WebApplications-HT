@@ -9,6 +9,7 @@ const passport = require("passport");
 const user = require("./src/js/userSerialization");
 const flash = require("express-flash");
 const session = require("express-session");
+const bootstrap = require("bootstrap");
 
 /* Routers for handling users and their blog posts */
 const postRouter = require("./src/routes/posts");
@@ -71,6 +72,25 @@ mongoose.Promise = Promise;
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
+/* USER LOGIN SESSIONS:
+Allow user login sessions: */
+if (process.env.SESSION_SECRET == null) {
+  console.log("Session secret failed");
+}
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+  })
+);
+/* USER AUTHENTICATION:
+Set up passport libraries for the user authentication and user sessions: */
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser(user.serialize);
+passport.deserializeUser(user.deserialize);
+
 /* SET THE VIEWS ENGINE: Using ejs but naming files with .html */
 app.set("views", path.join(__dirname, "./src/views"));
 app.engine("html", require("ejs").renderFile);
@@ -84,23 +104,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 /* Allow showing flash messages to the user: */
 app.use(flash());
-
-/* Allow user login sessions: */
-if (process.env.SESSION_SECRET == null) {
-  console.log("Session secret failed");
-}
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-  })
-);
-/* Set up passport libraries for the user authentication and user sessions: */
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser(user.serialize);
-passport.deserializeUser(user.deserialize);
 
 /* SET THE FIRST PAGE THE USER LANDS ON
 index.html should be welcome page unless logged in.*/

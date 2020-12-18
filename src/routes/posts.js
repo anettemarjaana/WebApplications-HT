@@ -107,7 +107,7 @@ Because forms can only either GET or POST, we need to require method-override.
 Only a logged in user is allowed to delete a post. */
 router.delete("/:id", redirectIfNotAuthenticated, async (req, res) => {
   await Post.findByIdAndDelete(req.params.id);
-  res.redirect("/");
+  res.redirect("/users/profile");
 });
 
 /* This function is called when creating a new or editing an existing

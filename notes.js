@@ -114,6 +114,9 @@ current user (isAuthenticated or not). Also posts/index should be changed too.
     * like edit post
 
 [] Make it look nice through CSS
+    * npm install bootstrap --save
+    * require('bootstrap')
+
 [] Befriend/Block button functionality for "specified"
 [] My blog and Log in/Log out buttons shown depending on req.isAuthenticated()
     * "/"
