@@ -125,19 +125,18 @@ router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
   */
 router.get("/:authorSlug", async (req, res) => {
   const feedSlug = req.params.authorSlug;
-  const user = await User.findOne({ username: feedSlug });
-  const feedVisible = user.visibleTo;
-  let pass = 0; // Pass 0 means the user can not access the page, 1 means access is granted
-
-  console.log("feedVisible: " + feedVisible);
-  /* Fetch the user from the database of users */
-
+  const user = await User.findOne({ urlSlug: feedSlug });
   if (user == null) {
     // If the urlSlug is faulty = if there's no such user
     console.log("No user found with given slug " + feedSlug);
     res.redirect("/posts/index");
   }
 
+  const feedVisible = user.visibleTo;
+  let pass = 0; // Pass 0 means the user can not access the page, 1 means access is granted
+
+  console.log("feedVisible: " + feedVisible);
+  /* Fetch the user from the database of users */
   /* These visibility permissions don't depend on whether the user is authenticated
   or not: */
   if (feedVisible === "me") {

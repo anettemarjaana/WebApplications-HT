@@ -29,7 +29,12 @@
 
   <body>
     <div class="container">
-      <h1 class="mb-4">Edit your angle</h1>
+      <div class="row align-items-start justify-content-center">
+        <div class="col">
+          <h1 class="mb-10">angler</h1>
+        </div>
+      </div>
+      <h2 class="mb-4">Edit your angle</h2>
 
       <form action="/posts/<%= post.id %>?_method=PUT" method="POST">
         <%- include("_formfields.html") %>

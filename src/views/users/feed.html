@@ -23,7 +23,12 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="mb-4"><%= user.username %>'s blog</h1>
+      <div class="row align-items-start justify-content-center">
+        <div class="col">
+          <h1 class="mb-10">angler</h1>
+        </div>
+      </div>
+      <h2 class="mb-4"><%= user.username %>'s blog</h2>
       <div class="float-sm-right">
         <a href="/posts/index" class="btn btn-secondary mt-4">Public posts</a>
         <a href="/users/profile" class="btn btn-success mt-4">My blog</a>
