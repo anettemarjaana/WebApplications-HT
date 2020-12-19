@@ -14,6 +14,8 @@ const session = require("express-session");
 const postRouter = require("./src/routes/posts");
 const userRouter = require("./src/routes/users");
 
+const redirectIfAuthenticated = require("./src/js/redirectIfAuthenticated");
+
 const app = express();
 
 /* BUILD THE DATABASE CONNECTION like in express-mongo demo:
@@ -116,10 +118,8 @@ app.use(
 
 /* SET THE FIRST PAGE THE USER LANDS ON
 index.html should be welcome page unless logged in.*/
-app.get("/", (req, res) => {
+app.get("/", redirectIfAuthenticated, (req, res) => {
   res.render("index");
-  console.log("User authenticated: " + req.isAuthenticated());
-  console.log("User: " + req.user);
 });
 
 /* USE THE POSTROUTER:

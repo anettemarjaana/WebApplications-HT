@@ -5,7 +5,7 @@ SEE IF USER HAS ALREADY LOGGED IN BUT STILL TRIES TO LOG IN
 function redirectIfAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     // if logged in
-    return res.redirect("/"); // redirect to home page
+    return res.redirect("/posts/index"); // redirect to posts index
   }
   // If not authenticated: allow whatever action
   next();

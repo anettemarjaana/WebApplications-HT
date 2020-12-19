@@ -34,9 +34,15 @@ router.get(
   redirectIfNotAuthenticated,
   async (req, res) => {
     const user = await User.findOne({ urlSlug: req.params.urlSlug });
-    console.log("Found user " + user.username + ". Rendering settings");
+    console.log("Found user " + user.username);
+    /* Find all users in the database to give settings as permitted users options.
+    Render them in an alphabetical order. */
+    const blogUsers = await User.find().sort({
+      username: 1
+    });
     res.render("users/settings", {
-      user: user
+      user: user,
+      blogUsers: blogUsers
     });
   }
 );
@@ -54,7 +60,7 @@ router.post(
   saveUser("signup")
 );
 
-/* A function for submitting user settings. */
+/* A function for submitting user settings. User is redirected to their own profile */
 router.put(
   "/:urlSlug",
   redirectIfNotAuthenticated,
@@ -201,19 +207,49 @@ function saveUser(path) {
         }
       }
     }
-    /* Use bcrypt and a hashed password for securing the password: */
-    const securePassword = await bcrypt.hash(req.body.password, 10);
-    user.password = securePassword;
-
-    /* Setting the access permission: */
-    user.visibleTo = req.body.visibleTo;
-    /* If the access permission is "specified", the user itself should be
-    included in the permittedUsers list:*/
-    if (user.visibleTo === "specified") {
-      if (!user.permittedUsers.includes(user.username)) {
-        user.permittedUsers.push(user.username);
-      }
+    /* If the password field has been filled (not mandatory in Settings) */
+    if (req.body.password) {
+      /* Use bcrypt and a hashed password for securing the password: */
+      const securePassword = await bcrypt.hash(req.body.password, 10);
+      user.password = securePassword;
+    } else {
+      /* If it's not been filled, use the original password. */
+      user.password = req.user.password;
     }
+
+    /* if the visiblity setting is selected: */
+    if (req.body.visibleTo) {
+      /* set the new access permission */
+      user.visibleTo = req.body.visibleTo;
+
+      /* If the access permission is "specified", the user itself should be
+    included in the permittedUsers list:*/
+      if (user.visibleTo === "specified") {
+        if (!user.permittedUsers.includes(user.username)) {
+          user.permittedUsers.push(user.username);
+        }
+        /* If the user specified users that are granted a permission: */
+        if (req.body.permittedUser) {
+          if (user.permittedUsers.includes(req.body.permittedUser.username)) {
+            let message = "This user already is allowed to see your blog.";
+            /* Only happens within settings: */
+            res.render(`/users/settings/${user.urlSlug}`);
+            console.log(message);
+            req.flash("info", message);
+          } else {
+            /* If the list does not include this name yet: */
+            user.permittedUsers.push(req.body.permittedUser.username);
+          }
+        }
+      } else {
+        // with any other permission setting
+        user.permittedUsers = []; // empty the array of permitted users
+      }
+    } else {
+      /* If no new visibility restriction is set this time */
+      user.visibleTo = req.user.visibleTo;
+    }
+    console.log("### new user settings ###");
     console.log(user);
 
     /* If there's a success:
@@ -231,6 +267,7 @@ function saveUser(path) {
           if (err) {
             console.log(err);
             res.render(`users/${path}`);
+            req.flash("info", "Login session failed.");
           }
           res.redirect("/users/profile");
         });
