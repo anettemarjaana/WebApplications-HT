@@ -5,7 +5,6 @@ const router = express.Router();
 
 /* Checking if the user is authenticated to see certain pages based on 
 if there is an ongoing session or not: */
-const redirectIfAuthenticated = require("./../js/redirectIfAuthenticated");
 const redirectIfNotAuthenticated = require("./../js/redirectIfNotAuthenticated");
 
 /* Render the blog posts from the database on the index page in an order
