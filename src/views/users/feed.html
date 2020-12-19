@@ -28,14 +28,18 @@
           <h1 class="mb-10">angler</h1>
         </div>
       </div>
-      <h2 class="mb-4"><%= user.username %>'s blog</h2>
-      <div class="float-sm-right">
-        <a href="/posts/index" class="btn btn-secondary mt-4">Public posts</a>
-        <a href="/users/profile" class="btn btn-success mt-4">My blog</a>
-      </div>
+      <div class="clearfix hidden-sm-up"></div>
 
-      <br />
-      <br />
+      <div class="row align-items-end">
+        <div class="col col-md-8">
+          <h2><%= user.username %>'s blog</h2>
+        </div>
+        <div class="col col-md-4">
+          <a href="/posts/index" class="btn btn-secondary">Public posts</a>
+          <a href="/users/profile" class="btn btn-primary">My blog</a>
+        </div>
+      </div>
+      <br /><br />
 
       <!--This page will contain a certain user's posts.
         Iterate through the blog posts sent from users.js:-->
