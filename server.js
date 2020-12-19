@@ -1,6 +1,6 @@
-// When exporting to Rahti, env variables: require("dotenv").config();
 const express = require("express");
 var path = require("path");
+require("dotenv").config();
 var mongoose = require("mongoose");
 var Promise = require("bluebird");
 const Post = require("./src/dbmodels/post");
@@ -114,6 +114,10 @@ app.use("/src/js", express.static(__dirname + "/node_modules/jquery/dist"));
 app.use(
   "/src/css",
   express.static(__dirname + "/node_modules/bootstrap/dist/css")
+);
+app.use(
+  "/src/scss",
+  express.static(__dirname + "/node_modules/bootstrap/scss")
 );
 
 /* SET THE FIRST PAGE THE USER LANDS ON

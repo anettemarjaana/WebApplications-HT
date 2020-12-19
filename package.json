@@ -9,7 +9,7 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "bluebird": "3.7.2",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "4.5.3",
     "dotenv": "^8.2.0",
     "ejs": "3.1.5",
     "express": "4.17.1",
@@ -22,6 +22,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "path": "0.12.7",
+    "sass": "^1.30.0",
     "slugify": "^1.4.6"
   },
   "keywords": [],

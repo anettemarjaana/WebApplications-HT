@@ -117,16 +117,17 @@ current user (isAuthenticated or not). Also posts/index should be changed too.
     * npm install bootstrap --save
     * require('bootstrap')
     * npm install jquery --save
+    * npm install sass --save
+    * 
 
-[] Befriend/Block button functionality for "specified"
-[] My blog and Log in/Log out buttons shown depending on req.isAuthenticated()
+[x] My blog and Log in/Log out buttons shown depending on req.isAuthenticated()
     * "/"
     * "/posts/index"
     * "/users/feed"
 
 See after:
 - Returning to Rahti
-- the environmental variables there?
+[x] the environmental variables there?
     * dotenv library + .env file
 
 
