@@ -28,7 +28,6 @@ passport.use(
         -> Compare the password to the entered password. */
       try {
         pwComparison = await bcrypt.compare(password, user.password);
-        console.log("pwComparison: " + pwComparison);
         if (pwComparison) {
           /* Password correct */
           return done(null, user);

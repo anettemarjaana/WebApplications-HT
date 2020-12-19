@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   visibleTo: {
     type: String
   },
-  permittedUsers: [{ username: String }]
+  permittedUsers: []
 });
 
 /* The function below is going to be ran within any update of the user */

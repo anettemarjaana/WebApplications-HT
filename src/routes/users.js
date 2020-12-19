@@ -61,7 +61,7 @@ router.post(
   "/",
   redirectIfAuthenticated,
   async (req, res, next) => {
-    console.log("Register button was hit");
+    console.log("Sign up submit button was hit");
     req.user = new User();
     next();
   },
@@ -73,6 +73,7 @@ router.put(
   "/:urlSlug",
   redirectIfNotAuthenticated,
   async (req, res, next) => {
+    console.log("Settings submit button was hit");
     req.user = await User.findOne({ urlSlug: req.params.urlSlug });
     next();
   },
@@ -97,6 +98,7 @@ router.post("/login", redirectIfAuthenticated, (req, res, next) => {
 - also when user clicks "Own page" button or their own name on the list of all posts */
 router.get("/profile", redirectIfNotAuthenticated, async (req, res) => {
   const user = await User.findOne({ username: req.user.username });
+  console.log("Redirecting to user's profile: " + user.username);
   if (user == null) {
     console.log("No user found");
     /* if there's no authenticated user (in case) */
@@ -280,18 +282,22 @@ function saveSettings(path) {
       if (user.visibleTo === "specified") {
         if (!user.permittedUsers.includes(user.username)) {
           user.permittedUsers.push(user.username);
+          console.log("User: " + user.username + " added on permittedUsers");
         }
         /* If the user specified a user that should be granted a permission: */
         if (req.body.permittedUser) {
           /* the permittedUser value is already user.username on settings page: */
           if (user.permittedUsers.includes(req.body.permittedUser)) {
             let message = "This user already is allowed to see your blog.";
-            res.render(`/users/${path}`);
             console.log(message);
+            res.render(`/users/${path}`);
             req.flash("info", message);
           } else {
             /* If the list does not include this name yet: */
             user.permittedUsers.push(req.body.permittedUser);
+            console.log(
+              "User: " + req.body.permittedUser + " added on permittedUsers"
+            );
           }
         }
       } else {
@@ -311,11 +317,12 @@ function saveSettings(path) {
     */
     try {
       user = await user.save();
-      res.redirect("/users/profile");
+      console.log("Settings saved successfully. Redirecting.");
+      res.redirect(`/users/${path}`);
     } catch (e) {
       /* If a required information is missing */
       console.log(e);
-      res.render(`users/${path}`);
+      res.render(`/users/${path}`);
     }
   };
 }
