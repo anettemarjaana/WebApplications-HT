@@ -3,7 +3,6 @@ var path = require("path");
 require("dotenv").config();
 var mongoose = require("mongoose");
 var Promise = require("bluebird");
-const Post = require("./src/dbmodels/post");
 const methodOverride = require("method-override");
 const passport = require("passport");
 const user = require("./src/js/userSerialization");
