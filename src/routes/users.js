@@ -158,7 +158,7 @@ router.get("/:authorSlug", async (req, res) => {
       pass = 1;
     } else if (feedVisible === "specified") {
       /* Check whether this user is on the blog's list of permitted users */
-      if (req.params.permittedUsers.includes(req.user.username)) {
+      if (user.permittedUsers.includes(req.user.username)) {
         pass = 1;
       } else {
         pass = 0;
