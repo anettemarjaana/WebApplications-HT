@@ -114,10 +114,6 @@ app.use(
   "/src/css",
   express.static(__dirname + "/node_modules/bootstrap/dist/css")
 );
-app.use(
-  "/src/scss",
-  express.static(__dirname + "/node_modules/bootstrap/scss")
-);
 
 /* SET THE FIRST PAGE THE USER LANDS ON
 index.html should be welcome page unless logged in.*/
